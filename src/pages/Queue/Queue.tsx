@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'motion/react'
-import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, Clock, CheckCircle, Loader, User } from 'lucide-react'
+import { Clock, CheckCircle, Loader, User } from 'lucide-react'
 
 type Status = 'waiting' | 'in-treatment' | 'done'
 
@@ -52,7 +51,6 @@ const statusConfig: Record<Status, { label: string; color: string; bg: string; i
 }
 
 export default function Queue() {
-  const navigate = useNavigate()
   const [patients, setPatients] = useState<Patient[]>(initialPatients)
 
   // Tick down waiting countdowns every second

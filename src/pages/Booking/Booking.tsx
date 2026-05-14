@@ -1,6 +1,6 @@
 import { motion } from 'motion/react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, User, Phone, Mail, Calendar, MessageSquare, Stethoscope } from 'lucide-react'
+import { User, Phone, Mail, Calendar, MessageSquare, Stethoscope } from 'lucide-react'
 
 const services = [
   'Teeth Whitening',
