@@ -23,3 +23,26 @@ body {
   overflow-x: hidden;
   background-color: #f0f0f0;
 }
+
+/* Auth page utilities */
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, #E2E8F0 1px, transparent 1px),
+    linear-gradient(to bottom, #E2E8F0 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.frame-line {
+  position: fixed;
+  background-color: #E2E8F0;
+  pointer-events: none;
+  z-index: 10;
+}
+.frame-line-top    { top: 12px;    left: 12px; right: 12px;  height: 1px; }
+.frame-line-bottom { bottom: 12px; left: 12px; right: 12px;  height: 1px; }
+.frame-line-left   { left: 12px;   top: 12px;  bottom: 12px; width: 1px;  }
+.frame-line-right  { right: 12px;  top: 12px;  bottom: 12px; width: 1px;  }

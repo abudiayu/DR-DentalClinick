@@ -1,7 +1,9 @@
 import { motion } from 'motion/react'
 import { ArrowUpRight } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 export default function BottomLeftCard() {
+  const navigate = useNavigate()
   return (
     <motion.div
       initial={{ x: -20, opacity: 0 }}
@@ -19,16 +21,17 @@ export default function BottomLeftCard() {
         </span>
       </div>
 
-      {/* Join Discord button */}
+      {/* Join Staff button */}
       <motion.button
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
+        onClick={() => navigate('/auth')}
         className="flex items-center bg-white rounded-full pl-1.5 pr-5 py-1.5 gap-2 hover:bg-white/90 transition-colors self-start group cursor-pointer"
       >
         <div className="bg-[rgba(30,50,90,0.1)] p-1 rounded-full flex items-center justify-center">
           <ArrowUpRight className="w-3.5 h-3.5 text-[rgba(30,50,90,0.9)]" />
         </div>
-        <span className="text-[14px] font-normal text-[rgba(30,50,90,0.9)]">Join Discord</span>
+        <span className="text-[14px] font-normal text-[rgba(30,50,90,0.9)]">Join Staff</span>
       </motion.button>
     </motion.div>
   )

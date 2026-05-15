@@ -4,6 +4,11 @@ import Hero from './components/Hero'
 import HomeContent from './components/sections/HomeContent'
 import Booking from './pages/Booking/Booking'
 import Queue from './pages/Queue/Queue'
+import Manager from './pages/AdminPages/Manager/Manager'
+import Card from './pages/AdminPages/Card/Card'
+import Nerse from './pages/AdminPages/NersePage/Nerse'
+import Auth from './pages/AdminPages/Auth/Auth'
+import { Error } from './Error/Error'
 
 function Home() {
   return (
@@ -22,6 +27,11 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/booking" element={<Booking />} />
         <Route path="/queue" element={<Queue />} />
+        <Route path='/manager' element = {<Manager/>}/>
+        <Route path='/card' element = {<Card/>}/>
+        <Route path='/Nerse' element= {<Nerse/>}/>
+        <Route path='/auth' element={<Auth />} />
+        <Route path='*' element ={<Error/>} />
       </Routes>
     </>
   )
