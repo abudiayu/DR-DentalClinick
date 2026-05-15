@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import HomeContent from './components/sections/HomeContent'
@@ -19,10 +19,15 @@ function Home() {
   )
 }
 
+const HIDE_NAV = ['/auth', '/manager', '/card', '/nerse']
+
 export default function App() {
+  const { pathname } = useLocation()
+  const showNav = !HIDE_NAV.includes(pathname.toLowerCase())
+
   return (
     <>
-      <Navbar />
+      {showNav && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/booking" element={<Booking />} />

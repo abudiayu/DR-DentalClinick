@@ -65,8 +65,16 @@ export default function Auth() {
 
         {/* Logo */}
         <div className="flex justify-center mb-6">
-          <div className="w-10 h-10 border border-[#E2E8F0] flex items-center justify-center rotate-45 bg-[#F1F5F9]">
+          {/* <div className="w-10 h-10 border border-[#E2E8F0] flex items-center justify-center rotate-45 bg-[#F1F5F9]">
             <span className="text-[#0F172A] font-bold text-sm -rotate-45 tracking-widest">A</span>
+          </div> */}
+          <div className="flex-1 flex items-center justify-center">
+            <img
+              src="/logodesign.png"
+              alt="Dr Logo"
+              className="h-20 w-auto object-contain cursor-pointer drop-shadow-[0_2px_8px_rgba(255,255,255,0.6)]"
+              onClick={() => navigate('/')}
+            />
           </div>
         </div>
 
