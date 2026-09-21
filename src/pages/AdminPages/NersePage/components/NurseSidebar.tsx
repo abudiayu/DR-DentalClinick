@@ -4,6 +4,7 @@ import {
   FolderOpen, BarChart3, Bell, LogOut, X
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import type { NurseSection } from '../types'
 
 interface Props {
@@ -14,25 +15,26 @@ interface Props {
   unread: number
 }
 
-const items: { key: NurseSection; label: string; icon: React.ReactNode }[] = [
-  { key: 'dashboard',     label: 'Dashboard',       icon: <LayoutDashboard className="w-4 h-4" /> },
-  { key: 'register',      label: 'Register Patient', icon: <UserPlus className="w-4 h-4" />       },
-  { key: 'payments',      label: 'Card Payments',    icon: <CreditCard className="w-4 h-4" />     },
-  { key: 'waiting',       label: 'Waiting Patients', icon: <Clock className="w-4 h-4" />          },
-  { key: 'records',       label: 'Patient Records',  icon: <FolderOpen className="w-4 h-4" />     },
-  { key: 'reports',       label: 'Reports',          icon: <BarChart3 className="w-4 h-4" />      },
-  { key: 'notifications', label: 'Notifications',    icon: <Bell className="w-4 h-4" />           },
-]
-
 export default function NurseSidebar({ active, onChange, open, onClose, unread }: Props) {
   const navigate = useNavigate()
+  const { t } = useTranslation()
+
+  const items: { key: NurseSection; label: string; icon: React.ReactNode }[] = [
+    { key: 'dashboard',     label: t('nurse.dashboard'),     icon: <LayoutDashboard className="w-4 h-4" /> },
+    { key: 'register',      label: t('nurse.register'),      icon: <UserPlus        className="w-4 h-4" /> },
+    { key: 'payments',      label: t('nurse.payments'),      icon: <CreditCard      className="w-4 h-4" /> },
+    { key: 'waiting',       label: t('nurse.waiting'),       icon: <Clock           className="w-4 h-4" /> },
+    { key: 'records',       label: t('nurse.records'),       icon: <FolderOpen      className="w-4 h-4" /> },
+    { key: 'reports',       label: t('nurse.reportsSection'),icon: <BarChart3       className="w-4 h-4" /> },
+    { key: 'notifications', label: t('nurse.notifications'), icon: <Bell            className="w-4 h-4" /> },
+  ]
 
   return (
     <>
       {open && <div className="fixed inset-0 bg-black/40 z-30 lg:hidden" onClick={onClose} />}
 
       <aside className={`
-        fixed top-0 left-0 h-full w-60 z-40 flex flex-col
+        fixed top-0 start-0 h-full w-60 z-40 flex flex-col
         bg-gradient-to-b from-[#0a1628] to-[#0d2044]
         transition-transform duration-300
         ${open ? 'translate-x-0' : '-translate-x-full'}
@@ -51,10 +53,10 @@ export default function NurseSidebar({ active, onChange, open, onClose, unread }
             </div>
             <div>
               <p className="text-white text-sm font-semibold">Dr. Zain</p>
-              <p className="text-cyan-400/60 text-[10px] uppercase tracking-widest">Nurse Panel</p>
+              <p className="text-cyan-400/60 text-[10px] uppercase tracking-widest">{t('nurse.nursePanel')}</p>
             </div>
           </div>
-          <button onClick={onClose} className="lg:hidden text-white/30 hover:text-white">
+          <button onClick={onClose} className="lg:hidden text-white/30 hover:text-white" aria-label="Close">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -76,12 +78,12 @@ export default function NurseSidebar({ active, onChange, open, onClose, unread }
               {item.icon}
               <span className="tracking-wide">{item.label}</span>
               {item.key === 'notifications' && unread > 0 && (
-                <span className="ml-auto bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                <span className="ms-auto bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                   {unread}
                 </span>
               )}
               {active === item.key && (
-                <span className="ml-auto w-1 h-4 rounded-full bg-cyan-400" />
+                <span className="ms-auto w-1 h-4 rounded-full bg-cyan-400" />
               )}
             </motion.button>
           ))}
@@ -94,7 +96,7 @@ export default function NurseSidebar({ active, onChange, open, onClose, unread }
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/30 hover:text-white hover:bg-white/5 text-sm transition-all"
           >
             <LogOut className="w-4 h-4" />
-            <span>Logout</span>
+            <span>{t('common.logout')}</span>
           </button>
         </div>
       </aside>

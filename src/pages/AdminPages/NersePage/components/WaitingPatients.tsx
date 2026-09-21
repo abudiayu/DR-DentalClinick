@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Eye, Printer, ArrowRight } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { NursePatient, WaitingStatus } from '../types'
 import { updatePatientStatus } from '../store'
 import WaitingBadge from './WaitingBadge'
@@ -7,12 +8,13 @@ import WaitingBadge from './WaitingBadge'
 interface Props { patients: NursePatient[] }
 
 const STATUS_CYCLE: Record<WaitingStatus, WaitingStatus> = {
-  Waiting: 'In Treatment',
+  Waiting:        'In Treatment',
   'In Treatment': 'Completed',
-  Completed: 'Completed',
+  Completed:      'Completed',
 }
 
 export default function WaitingPatients({ patients }: Props) {
+  const { t } = useTranslation()
   const [list, setList] = useState<NursePatient[]>(patients)
   const [selected, setSelected] = useState<NursePatient | null>(null)
 
@@ -26,14 +28,19 @@ export default function WaitingPatients({ patients }: Props) {
   const treating  = list.filter(p => p.waitingStatus === 'In Treatment').length
   const completed = list.filter(p => p.waitingStatus === 'Completed').length
 
+  const headers = [
+    t('nurse.cardNumber'), t('nurse.fullName'), t('nurse.age2'),
+    t('nurse.service'), t('nurse.payment'), t('nurse.registeredAt'),
+    t('manager.status'), t('manager.actions'),
+  ]
+
   return (
     <div className="space-y-4">
-      {/* Queue summary */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: 'Waiting',      count: waiting,   color: 'text-amber-600',   bg: 'bg-amber-50'   },
-          { label: 'In Treatment', count: treating,  color: 'text-blue-600',    bg: 'bg-blue-50'    },
-          { label: 'Completed',    count: completed, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+          { label: t('nurse.waitingStatus'), count: waiting,   color: 'text-amber-600',   bg: 'bg-amber-50'   },
+          { label: t('nurse.inTreatment'),   count: treating,  color: 'text-blue-600',    bg: 'bg-blue-50'    },
+          { label: t('nurse.completed'),     count: completed, color: 'text-emerald-600', bg: 'bg-emerald-50' },
         ].map(s => (
           <div key={s.label} className={`${s.bg} rounded-2xl p-4 border border-white`}>
             <p className={`text-2xl font-bold ${s.color}`}>{s.count}</p>
@@ -47,14 +54,14 @@ export default function WaitingPatients({ patients }: Props) {
           <table className="w-full text-xs">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50/80">
-                {['Card #','Patient','Age','Service','Payment','Time','Status','Actions'].map(h => (
-                  <th key={h} className="text-left px-4 py-3 text-slate-400 font-semibold uppercase tracking-wider whitespace-nowrap">{h}</th>
+                {headers.map(h => (
+                  <th key={h} className="text-start px-4 py-3 text-slate-400 font-semibold uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {list.length === 0 ? (
-                <tr><td colSpan={8} className="text-center py-12 text-slate-300 text-sm">No patients in queue</td></tr>
+                <tr><td colSpan={8} className="text-center py-12 text-slate-300 text-sm">{t('nurse.noQueue')}</td></tr>
               ) : list.map(p => (
                 <tr key={p.id} className="border-b border-slate-50 hover:bg-slate-50/60 transition-colors">
                   <td className="px-4 py-3 font-mono text-cyan-700 font-semibold">{p.cardNumber}</td>
@@ -66,11 +73,11 @@ export default function WaitingPatients({ patients }: Props) {
                   <td className="px-4 py-3"><WaitingBadge status={p.waitingStatus} /></td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1">
-                      <Btn icon={<Eye className="w-3.5 h-3.5" />}     color="text-indigo-400" onClick={() => setSelected(p)} />
-                      <Btn icon={<Printer className="w-3.5 h-3.5" />} color="text-slate-400"  onClick={() => window.print()} />
+                      <Btn icon={<Eye        className="w-3.5 h-3.5" />} color="text-indigo-400" onClick={() => setSelected(p)} />
+                      <Btn icon={<Printer    className="w-3.5 h-3.5" />} color="text-slate-400"  onClick={() => window.print()} />
                       {p.waitingStatus !== 'Completed' && (
                         <Btn icon={<ArrowRight className="w-3.5 h-3.5" />} color="text-cyan-500"
-                          onClick={() => advance(p.id, p.waitingStatus)} title={`Move to ${STATUS_CYCLE[p.waitingStatus]}`} />
+                          onClick={() => advance(p.id, p.waitingStatus)} />
                       )}
                     </div>
                   </td>
@@ -81,7 +88,6 @@ export default function WaitingPatients({ patients }: Props) {
         </div>
       </div>
 
-      {/* View modal */}
       {selected && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setSelected(null)}>
           <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl" onClick={e => e.stopPropagation()}>
@@ -96,15 +102,15 @@ export default function WaitingPatients({ patients }: Props) {
             </div>
             <div className="space-y-2 text-xs">
               {[
-                ['Age', selected.age],
-                ['Gender', selected.gender],
-                ['Phone', selected.phone],
-                ['Address', selected.address],
-                ['Emergency', selected.emergencyContact],
-                ['Service', selected.serviceType],
-                ['Card Fee', `${selected.cardFee} Birr`],
-                ['Payment', selected.paymentStatus],
-                ['Status', selected.waitingStatus],
+                [t('nurse.age2'),              selected.age],
+                [t('nurse.gender'),            selected.gender],
+                [t('nurse.phoneNumber'),       selected.phone],
+                [t('nurse.address'),           selected.address],
+                [t('nurse.emergencyContact'),  selected.emergencyContact],
+                [t('nurse.serviceType'),       selected.serviceType],
+                [t('nurse.cardFee'),           `${selected.cardFee} ${t('common.birr')}`],
+                [t('nurse.paymentStatus'),     selected.paymentStatus],
+                [t('manager.status'),          selected.waitingStatus],
               ].map(([k, v]) => (
                 <div key={String(k)} className="flex justify-between py-1.5 border-b border-slate-50">
                   <span className="text-slate-400 uppercase tracking-wider">{k}</span>
@@ -113,7 +119,7 @@ export default function WaitingPatients({ patients }: Props) {
               ))}
             </div>
             <button onClick={() => setSelected(null)} className="mt-4 w-full py-2 rounded-xl bg-slate-100 text-slate-600 text-xs font-semibold hover:bg-slate-200 transition-colors">
-              Close
+              {t('common.close')}
             </button>
           </div>
         </div>
@@ -122,9 +128,9 @@ export default function WaitingPatients({ patients }: Props) {
   )
 }
 
-function Btn({ icon, color, onClick, title }: { icon: React.ReactNode; color: string; onClick: () => void; title?: string }) {
+function Btn({ icon, color, onClick }: { icon: React.ReactNode; color: string; onClick: () => void }) {
   return (
-    <button title={title} onClick={onClick} className={`p-1.5 rounded-lg hover:bg-slate-100 transition-colors ${color}`}>
+    <button onClick={onClick} className={`p-1.5 rounded-lg hover:bg-slate-100 transition-colors ${color}`}>
       {icon}
     </button>
   )

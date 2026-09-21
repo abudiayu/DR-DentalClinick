@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { NursePatient, PaymentStatus } from '../types'
 import { updatePaymentStatus } from '../store'
 import WaitingBadge from './WaitingBadge'
@@ -7,6 +8,7 @@ import { CheckCircle } from 'lucide-react'
 interface Props { patients: NursePatient[] }
 
 export default function CardPayments({ patients }: Props) {
+  const { t } = useTranslation()
   const [list, setList] = useState<NursePatient[]>(patients)
 
   function markPaid(id: string) {
@@ -17,12 +19,17 @@ export default function CardPayments({ patients }: Props) {
   const totalCollected = list.filter(p => p.paymentStatus === 'Paid').reduce((s, p) => s + p.cardFee, 0)
   const totalPending   = list.filter(p => p.paymentStatus !== 'Paid').reduce((s, p) => s + p.cardFee, 0)
 
+  const headers = [
+    t('nurse.cardNumber'), t('nurse.fullName'), t('nurse.service'),
+    t('nurse.fee'), t('manager.status'), t('manager.actions'),
+  ]
+
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <SumCard label="Collected Today" value={`${totalCollected.toLocaleString()} Birr`} color="text-emerald-600" bg="bg-emerald-50" />
-        <SumCard label="Pending"         value={`${totalPending.toLocaleString()} Birr`}   color="text-red-500"     bg="bg-red-50"     />
-        <SumCard label="Total Patients"  value={String(list.length)}                        color="text-indigo-600"  bg="bg-indigo-50"  />
+        <SumCard label={t('nurse.collectedToday')} value={`${totalCollected.toLocaleString()} ${t('common.birr')}`} color="text-emerald-600" bg="bg-emerald-50" />
+        <SumCard label={t('nurse.pending')}         value={`${totalPending.toLocaleString()} ${t('common.birr')}`}   color="text-red-500"     bg="bg-red-50"     />
+        <SumCard label={t('nurse.totalPatients')}   value={String(list.length)}                                       color="text-indigo-600"  bg="bg-indigo-50"  />
       </div>
 
       <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
@@ -30,8 +37,8 @@ export default function CardPayments({ patients }: Props) {
           <table className="w-full text-xs">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50/80">
-                {['Card #','Patient','Service','Card Fee','Status','Action'].map(h => (
-                  <th key={h} className="text-left px-4 py-3 text-slate-400 font-semibold uppercase tracking-wider whitespace-nowrap">{h}</th>
+                {headers.map(h => (
+                  <th key={h} className="text-start px-4 py-3 text-slate-400 font-semibold uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
@@ -41,7 +48,7 @@ export default function CardPayments({ patients }: Props) {
                   <td className="px-4 py-3 font-mono text-cyan-700 font-semibold">{p.cardNumber}</td>
                   <td className="px-4 py-3 font-medium text-[#0d2044] whitespace-nowrap">{p.fullName}</td>
                   <td className="px-4 py-3 text-slate-500">{p.serviceType}</td>
-                  <td className="px-4 py-3 font-mono text-slate-700">{p.cardFee} Birr</td>
+                  <td className="px-4 py-3 font-mono text-slate-700">{p.cardFee} {t('common.birr')}</td>
                   <td className="px-4 py-3"><WaitingBadge status={p.paymentStatus as PaymentStatus} /></td>
                   <td className="px-4 py-3">
                     {p.paymentStatus !== 'Paid' ? (
@@ -49,7 +56,7 @@ export default function CardPayments({ patients }: Props) {
                         onClick={() => markPaid(p.id)}
                         className="flex items-center gap-1 text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-lg hover:bg-emerald-100 transition-colors font-semibold"
                       >
-                        <CheckCircle className="w-3 h-3" /> Mark Paid
+                        <CheckCircle className="w-3 h-3" /> {t('nurse.markPaid')}
                       </button>
                     ) : (
                       <span className="text-slate-300 text-[11px]">—</span>

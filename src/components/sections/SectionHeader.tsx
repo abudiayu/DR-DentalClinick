@@ -1,9 +1,12 @@
 import { motion } from 'motion/react'
 import { ArrowUpRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 export default function SectionHeader() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -15,13 +18,15 @@ export default function SectionHeader() {
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-3">
           <div className="w-1 h-5 rounded-full bg-[#202B4D]" />
-          <span className="text-[11px] uppercase tracking-[0.2em] text-[#5E6470]">Our Services</span>
+          <span className="text-[11px] uppercase tracking-[0.2em] text-[#5E6470]">
+            {t('services.sectionTag')}
+          </span>
         </div>
         <h2 className="text-[32px] md:text-[48px] lg:text-[56px] font-normal text-[#202B4D] tracking-tight leading-[1.05] max-w-xl">
-          Crafted for your perfect smile
+          {t('services.heading')}
         </h2>
         <p className="text-[#5E6470] text-sm md:text-base font-normal max-w-md leading-relaxed">
-          Advanced dental care solutions. Access world-class treatments with compassionate specialists.
+          {t('services.subheading')}
         </p>
       </div>
 
@@ -31,7 +36,7 @@ export default function SectionHeader() {
         onClick={() => navigate('/booking')}
         className="flex items-center gap-2 self-start md:self-auto bg-[#202B4D] text-white text-sm font-normal px-5 py-3 rounded-full hover:bg-[#2d3d6b] transition-colors cursor-pointer whitespace-nowrap"
       >
-        Book Appointment
+        {t('services.bookAppointment')}
         <ArrowUpRight className="w-4 h-4" />
       </motion.button>
     </motion.div>

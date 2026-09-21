@@ -1,9 +1,12 @@
 import { motion } from 'motion/react'
 import { ArrowUpRight, ChevronRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 export default function BottomRightCorner() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
+
   return (
     <motion.div
       initial={{ y: 20, opacity: 0 }}
@@ -41,10 +44,10 @@ export default function BottomRightCorner() {
         className="flex flex-col gap-0.5 cursor-pointer group"
       >
         <span className="text-[16px] md:text-[20px] font-normal text-[rgba(30,50,90,0.95)] group-hover:text-[rgba(30,50,90,0.7)] transition-colors">
-          Patient Queue
+          {t('hero.patientQueue')}
         </span>
         <div className="flex items-center gap-1 text-[rgba(30,50,90,0.6)] group-hover:text-[rgba(30,50,90,0.8)] transition-colors">
-          <span className="text-[12px] md:text-[15px] font-normal">See</span>
+          <span className="text-[12px] md:text-[15px] font-normal">{t('hero.see')}</span>
           <ChevronRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
         </div>
       </div>

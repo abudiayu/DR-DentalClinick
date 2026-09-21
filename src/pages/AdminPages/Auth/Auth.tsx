@@ -2,24 +2,27 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { Eye, EyeOff, Loader, GitBranch, Globe } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import CornerDot from '../../../components/CornerDot'
 
 type Position = 'manager' | 'nurse' | 'card'
 
 const POSITION_ROUTES: Record<Position, string> = {
   manager: '/manager',
-  nurse: '/Nerse',
-  card: '/card',
+  nurse:   '/Nerse',
+  card:    '/card',
 }
-
-const POSITIONS: { value: Position; label: string }[] = [
-  { value: 'manager', label: 'Manager' },
-  { value: 'nurse',   label: 'Nurse'   },
-  { value: 'card',    label: 'Card Staff' },
-]
 
 export default function Auth() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
+
+  const POSITIONS: { value: Position; label: string }[] = [
+    { value: 'manager', label: t('auth.manager')   },
+    { value: 'nurse',   label: t('auth.nurse')     },
+    { value: 'card',    label: t('auth.cardStaff') },
+  ]
+
   const [isRegister, setIsRegister]     = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading]           = useState(false)
@@ -41,17 +44,12 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center relative overflow-hidden">
-
-      {/* Grid background */}
       <div className="grid-overlay" />
-
-      {/* Frame lines */}
       <div className="frame-line frame-line-top"    />
       <div className="frame-line frame-line-bottom" />
       <div className="frame-line frame-line-left"   />
       <div className="frame-line frame-line-right"  />
 
-      {/* Auth card */}
       <motion.div
         initial={{ opacity: 0, scale: 0.97 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -65,9 +63,6 @@ export default function Auth() {
 
         {/* Logo */}
         <div className="flex justify-center mb-6">
-          {/* <div className="w-10 h-10 border border-[#E2E8F0] flex items-center justify-center rotate-45 bg-[#F1F5F9]">
-            <span className="text-[#0F172A] font-bold text-sm -rotate-45 tracking-widest">A</span>
-          </div> */}
           <div className="flex-1 flex items-center justify-center">
             <img
               src="/logodesign.png"
@@ -81,28 +76,27 @@ export default function Auth() {
         {/* Heading */}
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-[#0F172A] uppercase tracking-[0.18em]">
-            {isRegister ? 'Register' : 'Access'}
+            {isRegister ? t('auth.register') : t('auth.access')}
           </h1>
           <p className="text-[#94A3B8] text-xs uppercase tracking-widest mt-1">
-            {isRegister ? 'Establish your protocol' : 'Authenticate your session'}
+            {isRegister ? t('auth.establishProtocol') : t('auth.authenticateSession')}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-
           {/* Full Name — register only */}
           <AnimatePresence>
             {isRegister && (
               <motion.div
                 key="name-field"
-                initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-                animate={{ opacity: 1, height: 'auto', marginBottom: 0 }}
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3 }}
                 className="overflow-hidden"
               >
                 <label className="block text-[10px] uppercase tracking-widest text-[#64748B] mb-1.5">
-                  Full Name
+                  {t('auth.fullName')}
                 </label>
                 <input
                   name="name"
@@ -110,7 +104,8 @@ export default function Auth() {
                   required={isRegister}
                   value={form.name}
                   onChange={handleChange}
-                  placeholder="John Doe"
+                  placeholder={t('auth.fullNamePlaceholder')}
+                  aria-label={t('auth.fullName')}
                   className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded-lg px-4 py-2.5 text-sm text-[#0F172A] placeholder:text-[#94A3B8] outline-none focus:border-[#94A3B8] shadow-inner transition-colors"
                 />
               </motion.div>
@@ -120,7 +115,7 @@ export default function Auth() {
           {/* Email */}
           <div>
             <label className="block text-[10px] uppercase tracking-widest text-[#64748B] mb-1.5">
-              Email
+              {t('auth.email')}
             </label>
             <input
               name="email"
@@ -128,7 +123,8 @@ export default function Auth() {
               required
               value={form.email}
               onChange={handleChange}
-              placeholder="you@clinic.com"
+              placeholder={t('auth.emailPlaceholder')}
+              aria-label={t('auth.email')}
               className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded-lg px-4 py-2.5 text-sm text-[#0F172A] placeholder:text-[#94A3B8] outline-none focus:border-[#94A3B8] shadow-inner transition-colors"
             />
           </div>
@@ -136,7 +132,7 @@ export default function Auth() {
           {/* Password */}
           <div>
             <label className="block text-[10px] uppercase tracking-widest text-[#64748B] mb-1.5">
-              Password
+              {t('auth.password')}
             </label>
             <div className="relative">
               <input
@@ -145,12 +141,14 @@ export default function Auth() {
                 required
                 value={form.password}
                 onChange={handleChange}
-                placeholder="••••••••"
+                placeholder={t('auth.passwordPlaceholder')}
+                aria-label={t('auth.password')}
                 className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded-lg px-4 py-2.5 pr-10 text-sm text-[#0F172A] placeholder:text-[#94A3B8] outline-none focus:border-[#94A3B8] shadow-inner transition-colors"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(p => !p)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#64748B] transition-colors"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -162,7 +160,7 @@ export default function Auth() {
           {!isRegister && (
             <div>
               <label className="block text-[10px] uppercase tracking-widest text-[#64748B] mb-1.5">
-                Position
+                {t('auth.position')}
               </label>
               <div className="flex gap-2">
                 {POSITIONS.map(p => (
@@ -193,7 +191,7 @@ export default function Auth() {
           >
             {loading
               ? <Loader className="w-4 h-4 animate-spin" />
-              : isRegister ? 'Establish Protocol' : 'Authenticate Session'
+              : isRegister ? t('auth.establishBtn') : t('auth.authenticateBtn')
             }
           </motion.button>
         </form>
@@ -201,15 +199,15 @@ export default function Auth() {
         {/* Divider */}
         <div className="flex items-center gap-3 my-5">
           <div className="flex-1 h-px bg-[#E2E8F0]" />
-          <span className="text-[10px] uppercase tracking-widest text-[#94A3B8]">or</span>
+          <span className="text-[10px] uppercase tracking-widest text-[#94A3B8]">{t('auth.or')}</span>
           <div className="flex-1 h-px bg-[#E2E8F0]" />
         </div>
 
         {/* Social */}
         <div className="flex gap-3">
           {[
-          { icon: <GitBranch className="w-4 h-4" />, label: 'GitHub' },
-            { icon: <Globe className="w-4 h-4" />, label: 'Google' },
+            { icon: <GitBranch className="w-4 h-4" />, label: t('auth.github') },
+            { icon: <Globe     className="w-4 h-4" />, label: t('auth.google') },
           ].map(s => (
             <motion.button
               key={s.label}
@@ -225,12 +223,12 @@ export default function Auth() {
 
         {/* Toggle */}
         <p className="text-center text-xs text-[#94A3B8] mt-6 uppercase tracking-widest">
-          {isRegister ? 'Already have access?' : 'No account yet?'}{' '}
+          {isRegister ? t('auth.alreadyHaveAccess') : t('auth.noAccount')}{' '}
           <button
             onClick={() => setIsRegister(r => !r)}
             className="text-[#0F172A] font-semibold hover:underline transition-all"
           >
-            {isRegister ? 'Login' : 'Register'}
+            {isRegister ? t('auth.login') : t('auth.register')}
           </button>
         </p>
       </motion.div>

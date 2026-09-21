@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
+import { useTranslation } from 'react-i18next'
 import NurseSidebar from './components/NurseSidebar'
 import NurseTopbar from './components/NurseTopbar'
 import NurseDashboard from './components/NurseDashboard'
@@ -12,23 +13,23 @@ import NurseNotifications from './components/NurseNotifications'
 import { patients as storePatients, notifications as storeNotifs } from './store'
 import type { NurseSection } from './types'
 
-const TITLES: Record<NurseSection, string> = {
-  dashboard:     'Nurse Dashboard',
-  register:      'Register Patient',
-  payments:      'Card Payments',
-  waiting:       'Waiting Patients',
-  records:       'Patient Records',
-  reports:       'Daily Reports',
-  notifications: 'Notifications',
-}
-
 export default function Nerse() {
-  const [active, setActive]         = useState<NurseSection>('dashboard')
+  const { t } = useTranslation()
+  const [active, setActive]           = useState<NurseSection>('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [globalSearch, setGlobalSearch] = useState('')
-  // tick forces re-render to pick up store mutations
-  const [tick, setTick] = useState(0)
-  const refresh = useCallback(() => setTick(t => t + 1), [])
+  const [tick, setTick]               = useState(0)
+  const refresh = useCallback(() => setTick(tk => tk + 1), [])
+
+  const TITLES: Record<NurseSection, string> = {
+    dashboard:     t('nurse.dashboard'),
+    register:      t('nurse.register'),
+    payments:      t('nurse.payments'),
+    waiting:       t('nurse.waiting'),
+    records:       t('nurse.records'),
+    reports:       t('nurse.reportsSection'),
+    notifications: t('nurse.notifications'),
+  }
 
   const patients      = storePatients
   const notifications = storeNotifs
@@ -47,7 +48,7 @@ export default function Nerse() {
   function renderSection() {
     switch (active) {
       case 'dashboard':     return <NurseDashboard patients={patients} />
-      case 'register':      return <RegisterPatient onDone={() => { handleSection('waiting') }} />
+      case 'register':      return <RegisterPatient onDone={() => handleSection('waiting')} />
       case 'payments':      return <CardPayments patients={patients} />
       case 'waiting':       return <WaitingPatients patients={patients} />
       case 'records':       return <PatientRecords patients={patients} globalSearch={globalSearch} />
@@ -65,7 +66,6 @@ export default function Nerse() {
         onClose={() => setSidebarOpen(false)}
         unread={unread}
       />
-
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <NurseTopbar
           title={TITLES[active]}
@@ -74,7 +74,6 @@ export default function Nerse() {
           onNotifClick={() => handleSection('notifications')}
           onSearch={setGlobalSearch}
         />
-
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
           <AnimatePresence mode="wait">
             <motion.div

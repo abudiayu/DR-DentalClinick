@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import { ArrowUpRight, Smile, Shield } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const cardBase = 'bg-white rounded-[2rem] p-6 md:p-8 border border-black/5 shadow-[0_10px_40px_rgba(0,0,0,0.03)]'
 
@@ -12,6 +13,8 @@ function Tag({ children }: { children: React.ReactNode }) {
 }
 
 export default function ServiceCards() {
+  const { t } = useTranslation()
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-4 md:gap-5">
 
@@ -23,11 +26,10 @@ export default function ServiceCards() {
         transition={{ duration: 0.6, delay: 0.1 }}
         className={`${cardBase} flex flex-col justify-between min-h-[480px] lg:min-h-[560px]`}
       >
-        {/* Visual area */}
         <div className="flex-1 rounded-[1.4rem] overflow-hidden mb-6 min-h-[220px] lg:min-h-[300px] relative">
           <img
-            src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=800&q=80"
-            alt="Dental treatment"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6Ha4bRK54CdJuJDGDfPNouw-3orb9UqbwH385P9XkzVxdlzrRTfx53nWL&s=10"
+            alt={t('services.smileDesign')}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-white/20 to-transparent" />
@@ -35,16 +37,16 @@ export default function ServiceCards() {
 
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <Tag>Smile Design</Tag>
+            <Tag>{t('services.smileDesign')}</Tag>
             <div className="w-8 h-8 rounded-full bg-[#f0f0f0] flex items-center justify-center">
               <Smile className="w-4 h-4 text-[#202B4D]" />
             </div>
           </div>
           <h3 className="text-[22px] md:text-[26px] font-normal text-[#202B4D] tracking-tight leading-tight">
-            Unlock the beauty of your natural smile
+            {t('services.smileDesignTitle')}
           </h3>
           <p className="text-[#5E6470] text-sm leading-relaxed font-normal">
-            Veneers, whitening, and full smile makeovers — designed around your face. Experience confidence with immediate, lasting results.
+            {t('services.smileDesignDesc')}
           </p>
         </div>
       </motion.div>
@@ -61,21 +63,20 @@ export default function ServiceCards() {
           className={`${cardBase} flex flex-col gap-4`}
         >
           <div className="flex items-center justify-between">
-            <Tag>Real-time Care</Tag>
-            <Tag>24/7</Tag>
+            <Tag>{t('services.realtimeCare')}</Tag>
+            <Tag>{t('services.available247')}</Tag>
           </div>
           <h3 className="text-[22px] md:text-[26px] font-normal text-[#202B4D] tracking-tight leading-tight">
-            Emergency & Same-Day Dental
+            {t('services.emergency')}
           </h3>
           <p className="text-[#5E6470] text-sm leading-relaxed font-normal">
-            Track your treatment progress in real time with our patient portal. Keep your finger on the pulse of your dental health journey.
+            {t('services.emergencyDesc')}
           </p>
 
-          {/* Visual area */}
           <div className="rounded-[1.4rem] overflow-hidden h-[180px] md:h-[220px] relative mt-2">
             <img
               src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=800&q=80"
-              alt="Dental clinic interior"
+              alt={t('services.emergency')}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
@@ -95,17 +96,17 @@ export default function ServiceCards() {
           >
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
-                <Tag>Orthodontics</Tag>
+                <Tag>{t('services.orthodontics')}</Tag>
                 <div className="w-7 h-7 rounded-full bg-[#f0f0f0] flex items-center justify-center">
                   <Shield className="w-3.5 h-3.5 text-[#202B4D]" />
                 </div>
               </div>
               <p className="text-[#5E6470] text-sm leading-relaxed font-normal">
-                Braces & clear aligners by certified orthodontists. Precision-fitted for your bite.
+                {t('services.orthodonticsDesc')}
               </p>
             </div>
             <button className="flex items-center gap-1 text-[#202B4D] text-[13px] font-normal hover:opacity-70 transition-opacity cursor-pointer self-start">
-              View Plans <ArrowUpRight className="w-3.5 h-3.5" />
+              {t('services.viewPlans')} <ArrowUpRight className="w-3.5 h-3.5" />
             </button>
           </motion.div>
 
@@ -118,8 +119,8 @@ export default function ServiceCards() {
             className={`${cardBase} flex flex-col justify-between gap-4 min-h-[200px]`}
           >
             <div className="flex items-center justify-between">
-              <Tag>Implants</Tag>
-              <Tag>Permanent</Tag>
+              <Tag>{t('services.implants')}</Tag>
+              <Tag>{t('services.permanent')}</Tag>
             </div>
 
             <motion.div
@@ -130,7 +131,7 @@ export default function ServiceCards() {
             </motion.div>
 
             <p className="text-[#5E6470] text-sm leading-relaxed font-normal">
-              Move from missing teeth to a full, natural-looking smile. Titanium implants that last a lifetime.
+              {t('services.implantsDesc')}
             </p>
           </motion.div>
 

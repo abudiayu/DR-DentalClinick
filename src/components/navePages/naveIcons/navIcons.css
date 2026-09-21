@@ -1,7 +1,103 @@
-.dark_night{
-    /* padding-top: %; */
-    font-size: 30px;
-    font-weight: bolder;
-    cursor: pointer;
+/* =====================================================
+   navIcons.css  –  Day / Night toggle button
+   ===================================================== */
+
+/* Wrapper divs (kept for import compatibility) */
+.icons_wrapper,
+.icons_container,
+.icons_list {
+  display: contents; /* transparent in layout — no extra box */
 }
 
+/* ---------- The button ---------- */
+.dark_night {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Size */
+  width:  40px;
+  height: 40px;
+
+  /* Glass look that matches the navbar */
+  background: rgba(255, 255, 255, 0.10);
+  border:     1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+
+  /* Smooth hover transition */
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+
+  /* RTL — logical margin so it sits correctly in Arabic */
+  margin-inline: 2px;
+}
+
+.dark_night:hover {
+  background:    rgba(255, 255, 255, 0.20);
+  border-color:  rgba(255, 255, 255, 0.40);
+}
+
+/* ---------- Focus ring ---------- */
+.dark_night:focus-visible {
+  outline: 2px solid #3cc4d0;
+  outline-offset: 3px;
+}
+
+/* ---------- The emoji icon ---------- */
+.theme-icon {
+  display: block;
+  font-size: 18px;
+  line-height: 1;
+
+  /* Enter animation — spin + fade in */
+  animation: icon-enter 0.30s ease both;
+}
+
+@keyframes icon-enter {
+  from {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+/* Sun glow (light mode) */
+html[data-theme="light"] .dark_night .theme-icon {
+  filter: drop-shadow(0 0 6px rgba(255, 200, 50, 0.80))
+          drop-shadow(0 0 12px rgba(255, 160, 30, 0.45));
+}
+
+/* Moon glow (dark mode) */
+html[data-theme="dark"] .dark_night .theme-icon {
+  filter: drop-shadow(0 0 6px rgba(180, 210, 255, 0.80))
+          drop-shadow(0 0 12px rgba(120, 160, 255, 0.45));
+}
+
+/* ---------- Mobile (≤ 640 px) ---------- */
+@media (max-width: 640px) {
+  .dark_night {
+    width:  36px;
+    height: 36px;
+  }
+
+  .theme-icon {
+    font-size: 16px;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .dark_night,
+  .theme-icon {
+    transition: none;
+    animation:  none;
+  }
+}

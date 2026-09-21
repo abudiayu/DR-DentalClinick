@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Menu, Search, Bell } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   onMenuClick: () => void
@@ -10,11 +11,12 @@ interface Props {
 }
 
 export default function NurseTopbar({ onMenuClick, title, unread, onNotifClick, onSearch }: Props) {
+  const { t } = useTranslation()
   const [time, setTime] = useState(new Date())
 
   useEffect(() => {
-    const t = setInterval(() => setTime(new Date()), 1000)
-    return () => clearInterval(t)
+    const interval = setInterval(() => setTime(new Date()), 1000)
+    return () => clearInterval(interval)
   }, [])
 
   const dateStr = time.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
@@ -22,19 +24,20 @@ export default function NurseTopbar({ onMenuClick, title, unread, onNotifClick, 
 
   return (
     <header className="h-14 bg-white/80 backdrop-blur border-b border-slate-100 flex items-center px-4 gap-3 sticky top-0 z-20">
-      <button onClick={onMenuClick} className="lg:hidden text-slate-500 hover:text-slate-800">
+      <button onClick={onMenuClick} className="lg:hidden text-slate-500 hover:text-slate-800" aria-label="Open menu">
         <Menu className="w-5 h-5" />
       </button>
 
       <h1 className="text-xs font-bold text-[#0d2044] uppercase tracking-widest hidden sm:block">{title}</h1>
 
       {/* Search */}
-      <div className="flex-1 max-w-xs ml-auto sm:ml-4 relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+      <div className="flex-1 max-w-xs ms-auto sm:ms-4 relative">
+        <Search className="absolute start-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
         <input
           onChange={e => onSearch(e.target.value)}
-          placeholder="Search patient, card, phone..."
-          className="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-cyan-400 transition-colors"
+          placeholder={t('nurse.searchPatient')}
+          aria-label={t('nurse.searchPatient')}
+          className="w-full ps-8 pe-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-cyan-400 transition-colors"
         />
       </div>
 
@@ -45,10 +48,10 @@ export default function NurseTopbar({ onMenuClick, title, unread, onNotifClick, 
       </div>
 
       {/* Bell */}
-      <button onClick={onNotifClick} className="relative text-slate-500 hover:text-cyan-600 transition-colors">
+      <button onClick={onNotifClick} className="relative text-slate-500 hover:text-cyan-600 transition-colors" aria-label={t('nurse.notifications')}>
         <Bell className="w-4 h-4" />
         {unread > 0 && (
-          <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-[9px] font-bold flex items-center justify-center">
+          <span className="absolute -top-1 -end-1 w-4 h-4 bg-red-500 rounded-full text-white text-[9px] font-bold flex items-center justify-center">
             {unread}
           </span>
         )}
@@ -59,7 +62,7 @@ export default function NurseTopbar({ onMenuClick, title, unread, onNotifClick, 
         <div className="w-7 h-7 rounded-full bg-cyan-100 border border-cyan-200 flex items-center justify-center text-cyan-700 text-xs font-bold">
           N
         </div>
-        <span className="text-xs font-medium text-slate-600 hidden sm:block">Nurse</span>
+        <span className="text-xs font-medium text-slate-600 hidden sm:block">{t('auth.nurse')}</span>
       </div>
     </header>
   )

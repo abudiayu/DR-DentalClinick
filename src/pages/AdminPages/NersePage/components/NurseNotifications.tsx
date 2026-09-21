@@ -1,13 +1,14 @@
 import { Bell, CreditCard, UserPlus, Stethoscope, List } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { Notification } from '../types'
 
 interface Props { notifications: Notification[]; onRead: () => void }
 
 const icons: Record<Notification['type'], React.ReactNode> = {
-  patient: <UserPlus className="w-3.5 h-3.5" />,
-  payment: <CreditCard className="w-3.5 h-3.5" />,
+  patient: <UserPlus    className="w-3.5 h-3.5" />,
+  payment: <CreditCard  className="w-3.5 h-3.5" />,
   doctor:  <Stethoscope className="w-3.5 h-3.5" />,
-  queue:   <List className="w-3.5 h-3.5" />,
+  queue:   <List        className="w-3.5 h-3.5" />,
 }
 
 const colors: Record<Notification['type'], string> = {
@@ -18,20 +19,25 @@ const colors: Record<Notification['type'], string> = {
 }
 
 export default function NurseNotifications({ notifications, onRead }: Props) {
+  const { t } = useTranslation()
+
   return (
     <div className="max-w-lg space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-xs font-bold text-[#0d2044] uppercase tracking-widest">Notifications</h3>
-        <button onClick={onRead} className="text-[11px] text-cyan-600 hover:underline">Mark all read</button>
+        <h3 className="text-xs font-bold text-[#0d2044] uppercase tracking-widest">{t('nurse.notifications')}</h3>
+        <button onClick={onRead} className="text-[11px] text-cyan-600 hover:underline">{t('common.markAllRead')}</button>
       </div>
 
       {notifications.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-100 p-12 flex flex-col items-center gap-3">
           <Bell className="w-8 h-8 text-slate-200" />
-          <p className="text-sm text-slate-300">No notifications</p>
+          <p className="text-sm text-slate-300">{t('common.noNotifications')}</p>
         </div>
       ) : notifications.map(n => (
-        <div key={n.id} className={`flex items-start gap-3 bg-white rounded-2xl border p-4 transition-all ${n.read ? 'border-slate-100 opacity-60' : 'border-cyan-100'}`}>
+        <div
+          key={n.id}
+          className={`flex items-start gap-3 bg-white rounded-2xl border p-4 transition-all ${n.read ? 'border-slate-100 opacity-60' : 'border-cyan-100'}`}
+        >
           <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${colors[n.type]}`}>
             {icons[n.type]}
           </div>

@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { Search, Eye, Pencil, Printer, Trash2, Plus } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { Patient, PaymentStatus } from '../types'
 import { mockPatients } from '../mockData'
 import StatusBadge from './StatusBadge'
 
 export default function PatientsSection() {
+  const { t } = useTranslation()
   const [patients, setPatients] = useState<Patient[]>(mockPatients)
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
@@ -18,25 +20,32 @@ export default function PatientsSection() {
   const paged = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE)
 
   function deletePatient(id: string) {
-    if (confirm('Delete this patient record?')) {
+    if (confirm(t('manager.deleteConfirm'))) {
       setPatients(prev => prev.filter(p => p.id !== id))
     }
   }
+
+  const headers = [
+    t('manager.cardNo'), t('manager.name'), t('manager.phone'),
+    t('manager.address'), t('manager.treatment'), t('manager.status'),
+    t('manager.lastVisit'), t('manager.actions'),
+  ]
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+          <Search className="absolute start-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
           <input
             value={search}
             onChange={e => { setSearch(e.target.value); setPage(1) }}
-            placeholder="Search patients..."
-            className="pl-8 pr-3 py-2 text-xs bg-white border border-slate-200 rounded-lg outline-none focus:border-slate-400 w-56"
+            placeholder={t('manager.searchPatients')}
+            aria-label={t('manager.searchPatients')}
+            className="ps-8 pe-3 py-2 text-xs bg-white border border-slate-200 rounded-lg outline-none focus:border-slate-400 w-56"
           />
         </div>
         <button className="flex items-center gap-1.5 bg-[#0F172A] text-white text-xs px-3 py-2 rounded-lg hover:bg-slate-700 transition-colors">
-          <Plus className="w-3.5 h-3.5" /> Add Patient
+          <Plus className="w-3.5 h-3.5" /> {t('manager.addPatient')}
         </button>
       </div>
 
@@ -45,8 +54,8 @@ export default function PatientsSection() {
           <table className="w-full text-xs">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50">
-                {['Card #','Full Name','Phone','Address','Treatment','Status','Last Visit','Actions'].map(h => (
-                  <th key={h} className="text-left px-4 py-3 text-slate-500 font-semibold uppercase tracking-wider whitespace-nowrap">{h}</th>
+                {headers.map(h => (
+                  <th key={h} className="text-start px-4 py-3 text-slate-500 font-semibold uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
@@ -54,7 +63,7 @@ export default function PatientsSection() {
               {paged.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="text-center py-12 text-slate-400">
-                    No patients found
+                    {t('manager.noPatients')}
                   </td>
                 </tr>
               ) : paged.map(p => (
@@ -68,10 +77,10 @@ export default function PatientsSection() {
                   <td className="px-4 py-3 text-slate-500 whitespace-nowrap">{p.lastVisit}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1.5">
-                      <ActionBtn icon={<Eye className="w-3.5 h-3.5" />} color="text-indigo-500" />
-                      <ActionBtn icon={<Pencil className="w-3.5 h-3.5" />} color="text-amber-500" />
+                      <ActionBtn icon={<Eye     className="w-3.5 h-3.5" />} color="text-indigo-500" />
+                      <ActionBtn icon={<Pencil  className="w-3.5 h-3.5" />} color="text-amber-500" />
                       <ActionBtn icon={<Printer className="w-3.5 h-3.5" />} color="text-slate-400" />
-                      <ActionBtn icon={<Trash2 className="w-3.5 h-3.5" />} color="text-red-400" onClick={() => deletePatient(p.id)} />
+                      <ActionBtn icon={<Trash2  className="w-3.5 h-3.5" />} color="text-red-400" onClick={() => deletePatient(p.id)} />
                     </div>
                   </td>
                 </tr>
@@ -80,11 +89,10 @@ export default function PatientsSection() {
           </table>
         </div>
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-4 py-3 border-t border-slate-100">
             <span className="text-xs text-slate-400">
-              {filtered.length} records · Page {page} of {totalPages}
+              {filtered.length} {t('manager.records')} · {t('manager.page')} {page} {t('manager.of')} {totalPages}
             </span>
             <div className="flex gap-1">
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(n => (
@@ -108,10 +116,7 @@ export default function PatientsSection() {
 
 function ActionBtn({ icon, color, onClick }: { icon: React.ReactNode; color: string; onClick?: () => void }) {
   return (
-    <button
-      onClick={onClick}
-      className={`p-1.5 rounded-md hover:bg-slate-100 transition-colors ${color}`}
-    >
+    <button onClick={onClick} className={`p-1.5 rounded-md hover:bg-slate-100 transition-colors ${color}`}>
       {icon}
     </button>
   )

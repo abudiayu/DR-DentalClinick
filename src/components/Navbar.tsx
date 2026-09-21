@@ -1,20 +1,22 @@
 import { motion } from 'motion/react'
 import { ArrowUpRight, Phone, ChevronDown } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react';
-import NaveIcons from "./navePages/naveIcons/naveIcons.js";
-import LanguageDropdown from "./languages/LanguageDropdown.tsx";
-
-const navItems = [
-  { label: 'Home',     anchor: 'home'     },
-  { label: 'About Us', anchor: 'about'    },
-  { label: 'Service',  anchor: 'services' },
-  { label: 'Contact',  anchor: 'contact'  },
-]
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import NaveIcons from './navePages/naveIcons/naveIcons.js'
+import LanguageDropdown from './languages/LanguageDropdown'
 
 export default function Navbar() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [scrolled, setScrolled] = useState(false)
+
+  const navItems = [
+    { label: t('nav.home'),    anchor: 'home'     },
+    { label: t('nav.about'),   anchor: 'about'    },
+    { label: t('nav.service'), anchor: 'services' },
+    { label: t('nav.contact'), anchor: 'contact'  },
+  ]
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10)
@@ -27,16 +29,12 @@ export default function Navbar() {
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' })
     } else {
-      // If not on home page, go home first then scroll
       navigate('/')
       setTimeout(() => {
         document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }, 300)
     }
   }
-  // function background(){
-  //   style{}
-  // }
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between py-3 px-6 md:px-10 w-full border-b transition-all duration-300
@@ -44,7 +42,8 @@ export default function Navbar() {
         ? 'bg-black/40 backdrop-blur-md border-white/10'
         : 'bg-transparent border-transparent'
       }`}
-    >      {/* Left: logo + phone */}
+    >
+      {/* Left: logo + phone */}
       <div className="flex-1 flex items-center gap-4">
         <img
           src="/logodesign.png"
@@ -56,17 +55,21 @@ export default function Navbar() {
           href="tel:+251913909509"
           className="hidden md:flex items-center gap-2 text-white hover:text-white/80 text-base font-semibold transition-colors"
           style={{ textShadow: '0 2px 12px rgba(0,0,0,0.35)' }}
+          aria-label="+251 913 909 509"
         >
           <Phone className="w-4 h-4" />
           +251 913 909 509
         </a>
       </div>
 
-      {/* Center menu — absolutely centered */}
-      <ul className="hidden md:flex items-center gap-8 text-white font-normal text-base absolute left-1/2 -translate-x-1/2" style={{ textShadow: '0 1px 8px rgba(0,0,0,0.2)' }}>
+      {/* Center menu */}
+      <ul
+        className="hidden md:flex items-center gap-8 text-white font-normal text-base absolute left-1/2 -translate-x-1/2"
+        style={{ textShadow: '0 1px 8px rgba(0,0,0,0.2)' }}
+      >
         {navItems.map(({ label, anchor }) => (
           <motion.li
-            key={label}
+            key={anchor}
             onClick={() => scrollTo(anchor)}
             whileHover={{ scale: 1.12 }}
             whileTap={{ scale: 0.95 }}
@@ -78,12 +81,13 @@ export default function Navbar() {
           </motion.li>
         ))}
       </ul>
-      {/* Right: Book Now */}
-      <div className="language"><LanguageDropdown/></div>
-      <div className="flex-1 flex justify-end"> 
-      <div className='theam_changer' 
-      // onClick={background()}
-      > <NaveIcons/> </div>
+
+      {/* Right: Language + Theme + Book Now */}
+      <div className="flex-1 flex justify-end items-center gap-2">
+        <LanguageDropdown />
+        <div className="theam_changer">
+          <NaveIcons />
+        </div>
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -93,7 +97,7 @@ export default function Navbar() {
           <div className="bg-white/20 p-1 md:p-1.5 rounded-full flex items-center justify-center">
             <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-white" />
           </div>
-          <span className="text-xs md:text-sm font-normal">Book Now</span>
+          <span className="text-xs md:text-sm font-normal">{t('nav.bookNow')}</span>
         </motion.button>
       </div>
     </nav>

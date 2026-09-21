@@ -68,3 +68,44 @@ body {
 .frame-line-bottom { bottom: 12px; left: 12px; right: 12px;  height: 1px; }
 .frame-line-left   { left: 12px;   top: 12px;  bottom: 12px; width: 1px;  }
 .frame-line-right  { right: 12px;  top: 12px;  bottom: 12px; width: 1px;  }
+
+/* =========================================================
+   RTL + language-specific fonts
+   ========================================================= */
+
+/* Amharic */
+html[lang="am"] {
+  font-family: 'Noto Sans Ethiopic', var(--font-helvetica), sans-serif;
+}
+
+/* Arabic — RTL */
+html[lang="ar"] {
+  font-family: 'Cairo', var(--font-helvetica), sans-serif;
+  direction: rtl;
+}
+
+/* RTL layout fixes */
+[dir="rtl"] .lang__menu {
+  transform-origin: top left;
+}
+
+/* Flip chevron/arrow icons in RTL */
+[dir="rtl"] .lucide-arrow-up-right,
+[dir="rtl"] .lucide-chevron-right,
+[dir="rtl"] .lucide-arrow-right,
+[dir="rtl"] .lucide-arrow-left {
+  transform: scaleX(-1);
+}
+
+/* Navbar center menu RTL spacing */
+[dir="rtl"] nav ul {
+  direction: rtl;
+}
+
+/* Logical-property helpers already used via ms-/me-/ps-/pe-/start-/end-
+   Tailwind v4 supports these natively so no extra overrides needed. */
+
+/* Prevent horizontal scroll bleed in RTL */
+[dir="rtl"] body {
+  overflow-x: hidden;
+}

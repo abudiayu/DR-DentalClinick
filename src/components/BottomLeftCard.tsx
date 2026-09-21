@@ -1,9 +1,12 @@
 import { motion } from 'motion/react'
 import { ArrowUpRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 export default function BottomLeftCard() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
+
   return (
     <motion.div
       initial={{ x: -20, opacity: 0 }}
@@ -17,7 +20,7 @@ export default function BottomLeftCard() {
           5.2K
         </span>
         <span className="text-[10px] md:text-[12px] font-normal text-white/70 uppercase tracking-wider">
-          Active Yielders
+          {t('hero.activeYielders')}
         </span>
       </div>
 
@@ -31,7 +34,7 @@ export default function BottomLeftCard() {
         <div className="bg-[rgba(30,50,90,0.1)] p-1 rounded-full flex items-center justify-center">
           <ArrowUpRight className="w-3.5 h-3.5 text-[rgba(30,50,90,0.9)]" />
         </div>
-        <span className="text-[14px] font-normal text-[rgba(30,50,90,0.9)]">Join Staff</span>
+        <span className="text-[14px] font-normal text-[rgba(30,50,90,0.9)]">{t('hero.joinStaff')}</span>
       </motion.button>
     </motion.div>
   )

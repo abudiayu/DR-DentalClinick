@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
+import { useTranslation } from 'react-i18next'
 import Sidebar from './components/Sidebar'
 import Topbar from './components/Topbar'
 import DashboardOverview from './components/DashboardOverview'
@@ -12,20 +13,21 @@ import ExpensesSection from './components/ExpensesSection'
 import SettingsSection from './components/SettingsSection'
 import type { SidebarSection } from './types'
 
-const TITLES: Record<SidebarSection, string> = {
-  dashboard:    'Dashboard',
-  patients:     'Patient Management',
-  payments:     'Payment Management',
-  appointments: 'Appointments',
-  services:     'Service Management',
-  reports:      'Reports',
-  expenses:     'Expense Management',
-  settings:     'Settings',
-}
-
 export default function Manager() {
+  const { t } = useTranslation()
   const [active, setActive] = useState<SidebarSection>('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  const TITLES: Record<SidebarSection, string> = {
+    dashboard:    t('manager.dashboard'),
+    patients:     t('manager.patients'),
+    payments:     t('manager.payments'),
+    appointments: t('manager.appointments'),
+    services:     t('manager.services'),
+    reports:      t('manager.reports'),
+    expenses:     t('manager.expenses'),
+    settings:     t('manager.settings'),
+  }
 
   function renderSection() {
     switch (active) {
@@ -48,13 +50,8 @@ export default function Manager() {
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
       />
-
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <Topbar
-          title={TITLES[active]}
-          onMenuClick={() => setSidebarOpen(true)}
-        />
-
+        <Topbar title={TITLES[active]} onMenuClick={() => setSidebarOpen(true)} />
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
           <AnimatePresence mode="wait">
             <motion.div

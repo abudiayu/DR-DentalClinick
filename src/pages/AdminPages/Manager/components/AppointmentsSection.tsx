@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { CheckCircle, XCircle } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { Appointment, AppointmentStatus } from '../types'
 import { mockAppointments } from '../mockData'
 import StatusBadge from './StatusBadge'
 
 export default function AppointmentsSection() {
+  const { t } = useTranslation()
   const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments)
 
   function updateStatus(id: string, status: AppointmentStatus) {
@@ -17,8 +19,12 @@ export default function AppointmentsSection() {
         <table className="w-full text-xs">
           <thead>
             <tr className="border-b border-slate-100 bg-slate-50">
-              {['Patient','Date','Time','Service','Doctor','Status','Actions'].map(h => (
-                <th key={h} className="text-left px-4 py-3 text-slate-500 font-semibold uppercase tracking-wider whitespace-nowrap">{h}</th>
+              {[
+                t('manager.patient'), t('manager.date'), t('manager.time'),
+                t('manager.service'), t('manager.doctor'),
+                t('manager.status'), t('manager.actions'),
+              ].map(h => (
+                <th key={h} className="text-start px-4 py-3 text-slate-500 font-semibold uppercase tracking-wider whitespace-nowrap">{h}</th>
               ))}
             </tr>
           </thead>

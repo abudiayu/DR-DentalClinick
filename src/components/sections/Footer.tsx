@@ -1,21 +1,42 @@
 import { motion } from 'motion/react'
-
-const columns = [
-  {
-    title: 'Treatments',
-    links: ['Teeth Whitening', 'Dental Surgery', 'Braces & Aligners', 'Smile Design', 'Root Canal'],
-  },
-  {
-    title: 'Clinic',
-    links: ['About Us', 'Our Doctors', 'Patient Stories', 'Technology', 'Careers'],
-  },
-  {
-    title: 'Connect',
-    links: ['Book Online', 'Contact Us', 'Instagram', 'Facebook', 'Patient Portal'],
-  },
-]
+import { useTranslation } from 'react-i18next'
 
 export default function Footer() {
+  const { t } = useTranslation()
+
+  const columns = [
+    {
+      title: t('footer.treatments'),
+      links: [
+        t('footer.teethWhitening'),
+        t('footer.dentalSurgery'),
+        t('footer.bracesAligners'),
+        t('footer.smileDesign'),
+        t('footer.rootCanal'),
+      ],
+    },
+    {
+      title: t('footer.clinic'),
+      links: [
+        t('footer.aboutUs'),
+        t('footer.ourDoctors'),
+        t('footer.patientStories'),
+        t('footer.technology'),
+        t('footer.careers'),
+      ],
+    },
+    {
+      title: t('footer.connect'),
+      links: [
+        t('footer.bookOnline'),
+        t('footer.contactUs'),
+        t('footer.instagram'),
+        t('footer.facebook'),
+        t('footer.patientPortal'),
+      ],
+    },
+  ]
+
   return (
     <motion.footer
       initial={{ opacity: 0 }}
@@ -31,7 +52,7 @@ export default function Footer() {
             <img src="/logodesign.png" alt="Dr Logo" className="h-24 w-auto object-contain" />
           </div>
           <p className="text-[#5E6470] text-[13px] leading-relaxed font-normal">
-            Premium dental care for every smile. Trusted by 15,000+ patients worldwide.
+            {t('footer.tagline')}
           </p>
         </div>
 
@@ -61,10 +82,10 @@ export default function Footer() {
 
       <div className="mt-10 pt-6 border-t border-black/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <span className="text-[#5E6470] text-[12px] font-normal">
-          © 2026 Abdulkadir. All rights reserved.
+          {t('footer.copyright')}
         </span>
         <span className="text-[#5E6470] text-[12px] font-normal">
-          Privacy Policy · Terms of Service
+          {t('footer.privacyPolicy')} · {t('footer.termsOfService')}
         </span>
       </div>
     </motion.footer>

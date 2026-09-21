@@ -1,13 +1,16 @@
 import { motion } from 'motion/react'
-
-const stats = [
-  { value: '15K+', label: 'Patients Treated' },
-  { value: '98%', label: 'Satisfaction Rate' },
-  { value: '40+', label: 'Specialist Doctors' },
-  { value: '< 30min', label: 'Average Wait Time' },
-]
+import { useTranslation } from 'react-i18next'
 
 export default function StatsRow() {
+  const { t } = useTranslation()
+
+  const stats = [
+    { value: '15K+',    label: t('about.patientsTreated')  },
+    { value: '98%',     label: t('about.satisfactionRate') },
+    { value: '40+',     label: t('about.specialistDoctors') },
+    { value: '< 30min', label: t('about.averageWaitTime')  },
+  ]
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-0 border border-black/5 rounded-[2rem] overflow-hidden bg-white shadow-[0_10px_40px_rgba(0,0,0,0.03)]">
       {stats.map((stat, i) => (
@@ -18,7 +21,7 @@ export default function StatsRow() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: i * 0.1 }}
           className={`flex flex-col items-center justify-center py-8 md:py-12 px-4 text-center
-            ${i < stats.length - 1 ? 'border-r border-black/5' : ''}
+            ${i < stats.length - 1 ? 'border-e border-black/5' : ''}
             ${i < 2 ? 'border-b md:border-b-0 border-black/5' : ''}
           `}
         >

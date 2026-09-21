@@ -2,6 +2,7 @@ import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts'
+import { useTranslation } from 'react-i18next'
 import { dailyIncomeData, monthlyProfitData, serviceRevenueData } from '../mockData'
 
 function ChartCard({ title, children }: { title: string; children: React.ReactNode }) {
@@ -14,8 +15,9 @@ function ChartCard({ title, children }: { title: string; children: React.ReactNo
 }
 
 export function DailyIncomeChart() {
+  const { t } = useTranslation()
   return (
-    <ChartCard title="Daily Income">
+    <ChartCard title={t('manager.dailyIncome')}>
       <ResponsiveContainer width="100%" height={220}>
         <AreaChart data={dailyIncomeData}>
           <defs>
@@ -25,13 +27,13 @@ export function DailyIncomeChart() {
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-          <XAxis dataKey="day" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+          <XAxis dataKey="day"      tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+          <YAxis                    tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
           <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e2e8f0' }} />
           <Legend wrapperStyle={{ fontSize: 11 }} />
-          <Area type="monotone" dataKey="earnings" stroke="#6366f1" fill="url(#gEarnings)" strokeWidth={2} name="Total" />
-          <Area type="monotone" dataKey="card"     stroke="#8b5cf6" fill="none"            strokeWidth={1.5} strokeDasharray="4 2" name="Card" />
-          <Area type="monotone" dataKey="treatment"stroke="#a78bfa" fill="none"            strokeWidth={1.5} strokeDasharray="4 2" name="Treatment" />
+          <Area type="monotone" dataKey="earnings"  stroke="#6366f1" fill="url(#gEarnings)" strokeWidth={2}   name="Total"     />
+          <Area type="monotone" dataKey="card"      stroke="#8b5cf6" fill="none"            strokeWidth={1.5} strokeDasharray="4 2" name="Card"      />
+          <Area type="monotone" dataKey="treatment" stroke="#a78bfa" fill="none"            strokeWidth={1.5} strokeDasharray="4 2" name="Treatment" />
         </AreaChart>
       </ResponsiveContainer>
     </ChartCard>
@@ -39,18 +41,19 @@ export function DailyIncomeChart() {
 }
 
 export function MonthlyProfitChart() {
+  const { t } = useTranslation()
   return (
-    <ChartCard title="Monthly Profit">
+    <ChartCard title={t('manager.monthlyProfitChart')}>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={monthlyProfitData} barGap={4}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
           <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+          <YAxis                 tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
           <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e2e8f0' }} />
           <Legend wrapperStyle={{ fontSize: 11 }} />
-          <Bar dataKey="income"   fill="#6366f1" radius={[4,4,0,0]} name="Income"   />
-          <Bar dataKey="expenses" fill="#e2e8f0" radius={[4,4,0,0]} name="Expenses" />
-          <Bar dataKey="profit"   fill="#10b981" radius={[4,4,0,0]} name="Profit"   />
+          <Bar dataKey="income"   fill="#6366f1" radius={[4,4,0,0]} name={t('manager.income')}   />
+          <Bar dataKey="expenses" fill="#e2e8f0" radius={[4,4,0,0]} name={t('manager.expenses')} />
+          <Bar dataKey="profit"   fill="#10b981" radius={[4,4,0,0]} name={t('manager.netProfit')} />
         </BarChart>
       </ResponsiveContainer>
     </ChartCard>
@@ -58,8 +61,9 @@ export function MonthlyProfitChart() {
 }
 
 export function ServiceRevenuePie() {
+  const { t } = useTranslation()
   return (
-    <ChartCard title="Service Revenue">
+    <ChartCard title={t('manager.serviceRevenue')}>
       <ResponsiveContainer width="100%" height={220}>
         <PieChart>
           <Pie

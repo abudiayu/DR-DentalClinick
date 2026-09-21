@@ -1,23 +1,20 @@
 import { motion } from 'motion/react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Home } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 export const Error = () => {
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center px-6 relative overflow-hidden">
-
-      {/* Subtle grid */}
       <div className="grid-overlay" />
-
-      {/* Frame lines */}
       <div className="frame-line frame-line-top"    />
       <div className="frame-line frame-line-bottom" />
       <div className="frame-line frame-line-left"   />
       <div className="frame-line frame-line-right"  />
 
-      {/* Decorative blurred circles */}
       <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-indigo-100 rounded-full blur-3xl opacity-40 pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-cyan-100 rounded-full blur-3xl opacity-40 pointer-events-none" />
 
@@ -27,7 +24,6 @@ export const Error = () => {
         transition={{ duration: 0.5, ease: 'easeOut' }}
         className="relative z-10 flex flex-col items-center text-center max-w-md"
       >
-        {/* 404 number */}
         <motion.p
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -38,7 +34,6 @@ export const Error = () => {
           404
         </motion.p>
 
-        {/* Divider line */}
         <motion.div
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
@@ -46,14 +41,13 @@ export const Error = () => {
           className="w-16 h-px bg-[#E2E8F0] my-6"
         />
 
-        {/* Message */}
         <motion.h1
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
           className="text-lg font-bold text-[#0F172A] uppercase tracking-[0.15em] mb-2"
         >
-          Page Not Found
+          {t('error.pageNotFound')}
         </motion.h1>
 
         <motion.p
@@ -62,10 +56,9 @@ export const Error = () => {
           transition={{ delay: 0.5 }}
           className="text-sm text-[#94A3B8] leading-relaxed"
         >
-          The page you're looking for doesn't exist or has been moved.
+          {t('error.message')}
         </motion.p>
 
-        {/* Actions */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -79,7 +72,7 @@ export const Error = () => {
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#E2E8F0] text-[#64748B] text-xs font-semibold uppercase tracking-widest hover:border-[#94A3B8] hover:text-[#0F172A] transition-all bg-white"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            Go Back
+            {t('error.goBack')}
           </motion.button>
 
           <motion.button
@@ -89,7 +82,7 @@ export const Error = () => {
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0F172A] text-white text-xs font-semibold uppercase tracking-widest hover:bg-[#1E293B] transition-colors"
           >
             <Home className="w-3.5 h-3.5" />
-            Home
+            {t('error.home')}
           </motion.button>
         </motion.div>
       </motion.div>
