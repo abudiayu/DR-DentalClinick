@@ -6,7 +6,9 @@
     "contact": "Contact",
     "bookNow": "Réserver",
     "selectLanguage": "Choisir la langue",
-    "language": "Langue"
+    "language": "Langue",
+    "switchToDark": "Passer en mode sombre",
+    "switchToLight": "Passer en mode clair"
   },
   "hero": {
     "badge": "Prenez soin de votre santé",

@@ -6,7 +6,9 @@
     "contact": "Nu Quunnamaa",
     "bookNow": "Amma Buuqi",
     "selectLanguage": "Afaan filadhu",
-    "language": "Afaan"
+    "language": "Afaan",
+    "switchToDark": "Halkan Heeyyami",
+    "switchToLight": "Guyyaa Heeyyami"
   },
   "hero": {
     "badge": "Fayyaa Eegi",
