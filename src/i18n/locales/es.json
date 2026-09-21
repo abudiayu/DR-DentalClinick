@@ -148,7 +148,13 @@
     "google": "Google",
     "alreadyHaveAccess": "¿Ya tienes acceso?",
     "noAccount": "¿Sin cuenta aún?",
-    "login": "Iniciar Sesión"
+    "login": "Iniciar Sesión",
+    "inviteCode": "Código de invitación del personal",
+    "inviteCodePlaceholder": "Código del director de la clínica",
+    "passwordTooShort": "La contraseña debe tener al menos 8 caracteres.",
+    "somethingWrong": "Algo salió mal. Por favor, inténtalo de nuevo.",
+    "accountCreated": "Cuenta creada. Ahora puedes iniciar sesión.",
+    "serverUnreachable": "No se puede conectar al servidor. Verifica tu conexión."
   },
   "error": {
     "pageNotFound": "Página No Encontrada",

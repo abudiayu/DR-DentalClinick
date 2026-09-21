@@ -148,7 +148,13 @@
     "google": "Google",
     "alreadyHaveAccess": "ፕሮፋይል አለዎ?",
     "noAccount": "ምዝገባ አልተጠናቀቀም?",
-    "login": "ግቡ"
+    "login": "ግቡ",
+    "inviteCode": "የሠራተኛ ግብዣ ኮድ",
+    "inviteCodePlaceholder": "ኮዱን ከክሊኒኩ ሥራ አስኪያጅ ያግኙ",
+    "passwordTooShort": "የሚስጥር ቁጥር ቢያንስ 8 ፊደሎች ሊኖሩት ይገባል።",
+    "somethingWrong": "ችግር ተፈጥሯል። እባክዎ እንደገና ይሞክሩ።",
+    "accountCreated": "መለያ ተፈጥሯል። አሁን መግባት ይችላሉ።",
+    "serverUnreachable": "አገልጋዩን ማግኘት አልተቻለም። ግንኙነትዎን ያረጋግጡ።"
   },
   "error": {
     "pageNotFound": "ገጹ አልተገኘም",

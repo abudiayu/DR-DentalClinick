@@ -148,7 +148,13 @@
     "google": "Google",
     "alreadyHaveAccess": "Already have access?",
     "noAccount": "No account yet?",
-    "login": "Login"
+    "login": "Login",
+    "inviteCode": "Staff invite code",
+    "inviteCodePlaceholder": "Code from the clinic manager",
+    "passwordTooShort": "Password must be at least 8 characters.",
+    "somethingWrong": "Something went wrong. Please try again.",
+    "accountCreated": "Account created. You can log in now.",
+    "serverUnreachable": "Cannot reach the server. Check your connection and try again."
   },
   "error": {
     "pageNotFound": "Page Not Found",

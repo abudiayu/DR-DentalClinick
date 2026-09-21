@@ -148,7 +148,13 @@
     "google": "Google",
     "alreadyHaveAccess": "Herrega qabdaa?",
     "noAccount": "Herrega hin qabduu?",
-    "login": "Seeni"
+    "login": "Seeni",
+    "inviteCode": "Koodii Affeeraa Hojjetaa",
+    "inviteCodePlaceholder": "Koodii manaajara kilinikaa irraa",
+    "passwordTooShort": "Jecha darbii hedduu xiqqaa dha — 8 qubee ol ta'uu qaba.",
+    "somethingWrong": "Rakkoo tokko uumameera. Irra deebi'ii yaali.",
+    "accountCreated": "Herreegi uumame. Amma seenuu dandeessa.",
+    "serverUnreachable": "Serveriin hin argamne. Walqunnamtii kee mirkaneessi."
   },
   "error": {
     "pageNotFound": "Fuula Hin Argamne",
