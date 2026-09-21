@@ -1,7 +1,9 @@
 import { motion } from 'motion/react'
 import { ArrowUpRight, Phone, ChevronDown } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
+import NaveIcons from "./navePages/naveIcons/naveIcons.js";
+import LanguageDropdown from "./languages/LanguageDropdown.tsx";
 
 const navItems = [
   { label: 'Home',     anchor: 'home'     },
@@ -32,6 +34,9 @@ export default function Navbar() {
       }, 300)
     }
   }
+  // function background(){
+  //   style{}
+  // }
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between py-3 px-6 md:px-10 w-full border-b transition-all duration-300
@@ -73,9 +78,12 @@ export default function Navbar() {
           </motion.li>
         ))}
       </ul>
-
       {/* Right: Book Now */}
-      <div className="flex-1 flex justify-end">
+      <div className="language"><LanguageDropdown/></div>
+      <div className="flex-1 flex justify-end"> 
+      <div className='theam_changer' 
+      // onClick={background()}
+      > <NaveIcons/> </div>
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}

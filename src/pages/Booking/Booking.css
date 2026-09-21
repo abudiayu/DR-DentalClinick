@@ -1,0 +1,19 @@
+.booking_back{
+    background-color: rgb(219, 234, 248);
+    font-weight: bold;
+    position: fixed;
+    color: rgb(84, 82, 82);
+    padding: 5px;
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex;
+    margin-left: -70px;
+}
+.booking_back:hover{
+    background-color: rgb(188, 218, 247);
+}
+@media (max-width: 768px) {
+    .booking_back{
+        display: none;
+    }
+}

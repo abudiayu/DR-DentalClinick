@@ -26,6 +26,7 @@ export default function Hero() {
           {/* Text container */}
           <div className="w-full flex flex-col items-center px-6 text-center max-w-4xl">
             <HeroBadge />
+            
 
             <motion.h1
               initial={{ opacity: 0, scale: 0.98 }}

@@ -1,6 +1,9 @@
-import { motion } from 'motion/react'
+import { color, motion } from 'motion/react'
 import { useNavigate } from 'react-router-dom'
 import { User, Phone, Mail, Calendar, MessageSquare, Stethoscope } from 'lucide-react'
+// import { position } from 'html2canvas/dist/types/css/property-descriptors/position'
+import "./Booking.css"
+import { ArrowUpRight,} from 'lucide-react'
 
 const services = [
   'Teeth Whitening',
@@ -19,7 +22,7 @@ export default function Booking() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     alert('Appointment booked! We will contact you shortly.')
-    navigate('/')
+    navigate('/queue')
   }
 
   return (
@@ -30,6 +33,15 @@ export default function Booking() {
         transition={{ duration: 0.6 }}
         className="w-full max-w-2xl"
       >
+        <div 
+            onClick={() => navigate('/')}
+            className='booking_back'
+        >
+          <div className="bg-white/20 p-1 md:p-1.5 rounded-full flex items-center justify-center">
+            <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-white" />
+          </div> 
+          <span>Back</span>
+        </div>
         {/* Card */}
         <div className="bg-white rounded-[2rem] p-8 md:p-12 border border-black/5 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
           {/* Header */}
@@ -131,6 +143,7 @@ export default function Booking() {
             {/* Submit */}
             <motion.button
               type="submit"
+              // onClick={() => backeApoint()}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="mt-2 w-full bg-[#202B4D] text-white text-sm font-normal py-4 rounded-2xl hover:bg-[#2d3d6b] transition-colors cursor-pointer"
