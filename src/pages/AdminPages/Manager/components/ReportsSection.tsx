@@ -2,6 +2,7 @@ import { FileDown } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { ManagerData } from '../useManagerData'
 
+// the export section
 interface Props { data: ManagerData }
 
 type ReportRow = {
