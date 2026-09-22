@@ -17,17 +17,14 @@ export default function Booking() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f0f0f0] flex items-center justify-center p-4 md:p-8 pt-24 md:pt-28">
+    <div className="booking-page min-h-screen bg-[#f0f0f0] flex items-center justify-center p-4 md:p-8 pt-24 md:pt-28">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className="w-full max-w-2xl"
       >
-        <div
-          onClick={() => navigate('/')}
-          className="booking_back"
-        >
+        <div onClick={() => navigate('/')} className="booking_back">
           <div className="bg-white/20 p-1 md:p-1.5 rounded-full flex items-center justify-center">
             <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-white" />
           </div>
@@ -35,28 +32,30 @@ export default function Booking() {
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-[2rem] p-8 md:p-12 border border-black/5 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
+        <div className="booking-card bg-white rounded-[2rem] p-8 md:p-12 border border-black/5 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
+
           {/* Header */}
           <div className="flex flex-col gap-2 mb-10">
-            <span className="text-[11px] uppercase tracking-[0.2em] text-[#5E6470]">
+            <span className="booking-clinic-label text-[11px] uppercase tracking-[0.2em] text-[#5E6470]">
               {t('booking.clinicName')}
             </span>
-            <h1 className="text-[32px] md:text-[40px] font-normal text-[#202B4D] tracking-tight leading-tight">
+            <h1 className="booking-title text-[32px] md:text-[40px] font-normal text-[#202B4D] tracking-tight leading-tight">
               {t('booking.title')}
             </h1>
-            <p className="text-[#5E6470] text-sm leading-relaxed">
+            <p className="booking-subtitle text-[#5E6470] text-sm leading-relaxed">
               {t('booking.subtitle')}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-            {/* Name */}
+
+            {/* Full Name */}
             <div className="flex flex-col gap-2">
-              <label className="text-[11px] uppercase tracking-[0.15em] text-[#5E6470]">
+              <label className="booking-field-label text-[11px] uppercase tracking-[0.15em] text-[#5E6470]">
                 {t('booking.fullName')}
               </label>
-              <div className="flex items-center gap-3 bg-[#f8f8f8] border border-black/5 rounded-2xl px-4 py-3.5">
-                <User className="w-4 h-4 text-[#5E6470] shrink-0" />
+              <div className="booking-field-wrapper flex items-center gap-3 bg-[#f8f8f8] border border-black/5 rounded-2xl px-4 py-3.5 transition-all duration-200">
+                <User className="booking-field-icon w-4 h-4 text-[#5E6470] shrink-0" />
                 <input
                   type="text"
                   required
@@ -70,11 +69,11 @@ export default function Booking() {
             {/* Phone + Email */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div className="flex flex-col gap-2">
-                <label className="text-[11px] uppercase tracking-[0.15em] text-[#5E6470]">
+                <label className="booking-field-label text-[11px] uppercase tracking-[0.15em] text-[#5E6470]">
                   {t('booking.phone')}
                 </label>
-                <div className="flex items-center gap-3 bg-[#f8f8f8] border border-black/5 rounded-2xl px-4 py-3.5">
-                  <Phone className="w-4 h-4 text-[#5E6470] shrink-0" />
+                <div className="booking-field-wrapper flex items-center gap-3 bg-[#f8f8f8] border border-black/5 rounded-2xl px-4 py-3.5 transition-all duration-200">
+                  <Phone className="booking-field-icon w-4 h-4 text-[#5E6470] shrink-0" />
                   <input
                     type="tel"
                     required
@@ -85,11 +84,11 @@ export default function Booking() {
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-[11px] uppercase tracking-[0.15em] text-[#5E6470]">
+                <label className="booking-field-label text-[11px] uppercase tracking-[0.15em] text-[#5E6470]">
                   {t('booking.email')}
                 </label>
-                <div className="flex items-center gap-3 bg-[#f8f8f8] border border-black/5 rounded-2xl px-4 py-3.5">
-                  <Mail className="w-4 h-4 text-[#5E6470] shrink-0" />
+                <div className="booking-field-wrapper flex items-center gap-3 bg-[#f8f8f8] border border-black/5 rounded-2xl px-4 py-3.5 transition-all duration-200">
+                  <Mail className="booking-field-icon w-4 h-4 text-[#5E6470] shrink-0" />
                   <input
                     type="email"
                     placeholder={t('booking.emailPlaceholder')}
@@ -102,11 +101,11 @@ export default function Booking() {
 
             {/* Service */}
             <div className="flex flex-col gap-2">
-              <label className="text-[11px] uppercase tracking-[0.15em] text-[#5E6470]">
+              <label className="booking-field-label text-[11px] uppercase tracking-[0.15em] text-[#5E6470]">
                 {t('booking.service')}
               </label>
-              <div className="flex items-center gap-3 bg-[#f8f8f8] border border-black/5 rounded-2xl px-4 py-3.5">
-                <Stethoscope className="w-4 h-4 text-[#5E6470] shrink-0" />
+              <div className="booking-field-wrapper flex items-center gap-3 bg-[#f8f8f8] border border-black/5 rounded-2xl px-4 py-3.5 transition-all duration-200">
+                <Stethoscope className="booking-field-icon w-4 h-4 text-[#5E6470] shrink-0" />
                 <select
                   required
                   aria-label={t('booking.service')}
@@ -121,13 +120,13 @@ export default function Booking() {
               </div>
             </div>
 
-            {/* Date */}
+            {/* Preferred Date */}
             <div className="flex flex-col gap-2">
-              <label className="text-[11px] uppercase tracking-[0.15em] text-[#5E6470]">
+              <label className="booking-field-label text-[11px] uppercase tracking-[0.15em] text-[#5E6470]">
                 {t('booking.preferredDate')}
               </label>
-              <div className="flex items-center gap-3 bg-[#f8f8f8] border border-black/5 rounded-2xl px-4 py-3.5">
-                <Calendar className="w-4 h-4 text-[#5E6470] shrink-0" />
+              <div className="booking-field-wrapper flex items-center gap-3 bg-[#f8f8f8] border border-black/5 rounded-2xl px-4 py-3.5 transition-all duration-200">
+                <Calendar className="booking-field-icon w-4 h-4 text-[#5E6470] shrink-0" />
                 <input
                   type="date"
                   required
@@ -139,11 +138,11 @@ export default function Booking() {
 
             {/* Message */}
             <div className="flex flex-col gap-2">
-              <label className="text-[11px] uppercase tracking-[0.15em] text-[#5E6470]">
+              <label className="booking-field-label text-[11px] uppercase tracking-[0.15em] text-[#5E6470]">
                 {t('booking.message')}
               </label>
-              <div className="flex items-start gap-3 bg-[#f8f8f8] border border-black/5 rounded-2xl px-4 py-3.5">
-                <MessageSquare className="w-4 h-4 text-[#5E6470] shrink-0 mt-0.5" />
+              <div className="booking-field-wrapper flex items-start gap-3 bg-[#f8f8f8] border border-black/5 rounded-2xl px-4 py-3.5 transition-all duration-200">
+                <MessageSquare className="booking-field-icon w-4 h-4 text-[#5E6470] shrink-0 mt-0.5" />
                 <textarea
                   rows={3}
                   placeholder={t('booking.messagePlaceholder')}
@@ -158,7 +157,7 @@ export default function Booking() {
               type="submit"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="mt-2 w-full bg-[#202B4D] text-white text-sm font-normal py-4 rounded-2xl hover:bg-[#2d3d6b] transition-colors cursor-pointer"
+              className="booking-submit-btn mt-2 w-full bg-[#202B4D] text-white text-sm font-normal py-4 rounded-2xl hover:bg-[#2d3d6b] transition-colors cursor-pointer"
             >
               {t('booking.confirm')}
             </motion.button>

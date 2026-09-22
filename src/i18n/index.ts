@@ -6,8 +6,6 @@ import en from './locales/en.json'
 import am from './locales/am.json'
 import ar from './locales/ar.json'
 import om from './locales/om.json'
-import fr from './locales/fr.json'
-import es from './locales/es.json'
 
 i18n
   .use(LanguageDetector)
@@ -18,11 +16,9 @@ i18n
       am: { translation: am },
       ar: { translation: ar },
       om: { translation: om },
-      fr: { translation: fr },
-      es: { translation: es },
     },
     fallbackLng: 'en',
-    supportedLngs: ['en', 'am', 'ar', 'om', 'fr', 'es'],
+    supportedLngs: ['en', 'am', 'ar', 'om'],
     detection: {
       order: ['localStorage', 'navigator'],
       lookupLocalStorage: 'lang',
@@ -33,4 +29,4 @@ i18n
     },
   })
 
-export default i18n
+export default i18n;

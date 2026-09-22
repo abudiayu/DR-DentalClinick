@@ -171,4 +171,4 @@ export default function Queue() {
       </div>
     </div>
   )
-}
+};

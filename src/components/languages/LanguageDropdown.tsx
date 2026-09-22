@@ -13,8 +13,6 @@ const LANGUAGES: Language[] = [
   { code: 'am', name: 'Amharic',      native: 'አማርኛ'           },
   { code: 'ar', name: 'Arabic',       native: 'العربية'         },
   { code: 'om', name: 'Afaan Oromo',  native: 'Afaan Oromoo'   },
-  { code: 'fr', name: 'French',       native: 'Français'       },
-  { code: 'es', name: 'Spanish',      native: 'Español'        },
 ]
 
 function GlobeIcon() {

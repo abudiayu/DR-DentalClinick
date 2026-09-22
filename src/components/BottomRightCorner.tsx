@@ -33,7 +33,7 @@ export default function BottomRightCorner() {
         onClick={() => navigate('/queue')}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.95 }}
-        className="bg-[rgba(30,50,90,0.05)] w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center border border-[rgba(30,50,90,0.1)] cursor-pointer hover:bg-[rgba(30,50,90,0.1)] transition-colors"
+        className="hero-queue-icon-btn bg-[rgba(30,50,90,0.05)] w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center border border-[rgba(30,50,90,0.1)] cursor-pointer hover:bg-[rgba(30,50,90,0.1)] transition-colors"
       >
         <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-[rgba(30,50,90,0.8)]" />
       </motion.div>
@@ -43,10 +43,10 @@ export default function BottomRightCorner() {
         onClick={() => navigate('/queue')}
         className="flex flex-col gap-0.5 cursor-pointer group"
       >
-        <span className="text-[16px] md:text-[20px] font-normal text-[rgba(30,50,90,0.95)] group-hover:text-[rgba(30,50,90,0.7)] transition-colors">
+        <span className="hero-queue-title text-[16px] md:text-[20px] font-normal text-[rgba(30,50,90,0.95)] group-hover:text-[rgba(30,50,90,0.7)] transition-colors">
           {t('hero.patientQueue')}
         </span>
-        <div className="flex items-center gap-1 text-[rgba(30,50,90,0.6)] group-hover:text-[rgba(30,50,90,0.8)] transition-colors">
+        <div className="hero-queue-sub flex items-center gap-1 text-[rgba(30,50,90,0.6)] group-hover:text-[rgba(30,50,90,0.8)] transition-colors">
           <span className="text-[12px] md:text-[15px] font-normal">{t('hero.see')}</span>
           <ChevronRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
         </div>
