@@ -148,7 +148,13 @@
     "google": "Google",
     "alreadyHaveAccess": "لديك حساب؟",
     "noAccount": "ليس لديك حساب؟",
-    "login": "تسجيل الدخول"
+    "login": "تسجيل الدخول",
+    "inviteCode": "رمز دعوة الموظف",
+    "inviteCodePlaceholder": "الرمز من مدير العيادة",
+    "passwordTooShort": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.",
+    "somethingWrong": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+    "accountCreated": "تم إنشاء الحساب. يمكنك تسجيل الدخول الآن.",
+    "serverUnreachable": "تعذّر الوصول إلى الخادم. تحقق من اتصالك وأعد المحاولة."
   },
   "error": {
     "pageNotFound": "الصفحة غير موجودة",

@@ -9,6 +9,7 @@ import Card from './pages/AdminPages/Card/Card'
 import Nerse from './pages/AdminPages/NersePage/Nerse'
 import Auth from './pages/AdminPages/Auth/Auth'
 import { Error } from './Error/Error'
+import ProtectedRoute from './routes/ProtectedRoute';
 
 function Home() {
   return (
@@ -27,17 +28,27 @@ export default function App() {
 
   return (
     <>
-      {showNav && <Navbar />}
+  {showNav && <Navbar />}
       <Routes>
+
         <Route path="/" element={<Home />} />
         <Route path="/booking" element={<Booking />} />
         <Route path="/queue" element={<Queue />} />
-        <Route path='/manager' element = {<Manager/>}/>
-        <Route path='/card' element = {<Card/>}/>
-        <Route path='/Nerse' element= {<Nerse/>}/>
-        <Route path='/auth' element={<Auth />} />
-        <Route path='*' element ={<Error/>} />
-      </Routes>
-    </>
+        <Route path="/auth" element={<Auth />} />
+
+
+        <Route element={<ProtectedRoute allowedRoles={["manager"]} />}>
+          <Route path="/manager" element={<Manager />} />
+        </Route>
+
+        {/* Nurse (and manager) */}
+        <Route element={<ProtectedRoute allowedRoles={["nurse", "manager"]} />}>
+          <Route path="/Nerse" element={<Nerse />} />
+          <Route path="/card" element={<Card />} />
+        </Route>
+
+        <Route path="*" element={<Error />} />
+          </Routes>
+        </>
   )
 }

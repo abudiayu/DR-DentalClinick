@@ -12,6 +12,15 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- Apply saved theme BEFORE React mounts to prevent flash of dark/wrong theme -->
+    <script>
+      (function () {
+        var saved = '';
+        try { saved = localStorage.getItem('theme') || ''; } catch (_) {}
+        // Default is light — only go dark if explicitly saved
+        document.documentElement.setAttribute('data-theme', saved === 'dark' ? 'dark' : 'light');
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

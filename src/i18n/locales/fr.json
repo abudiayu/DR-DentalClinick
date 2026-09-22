@@ -148,7 +148,13 @@
     "google": "Google",
     "alreadyHaveAccess": "Vous avez déjà un accès ?",
     "noAccount": "Pas encore de compte ?",
-    "login": "Se Connecter"
+    "login": "Se Connecter",
+    "inviteCode": "Code d'invitation du personnel",
+    "inviteCodePlaceholder": "Code fourni par le directeur de la clinique",
+    "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères.",
+    "somethingWrong": "Une erreur s'est produite. Veuillez réessayer.",
+    "accountCreated": "Compte créé. Vous pouvez vous connecter maintenant.",
+    "serverUnreachable": "Impossible de contacter le serveur. Vérifiez votre connexion."
   },
   "error": {
     "pageNotFound": "Page Introuvable",

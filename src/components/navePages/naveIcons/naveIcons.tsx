@@ -4,20 +4,24 @@ import './navIcons.css'
 
 type Theme = 'light' | 'dark'
 
+// Default is always LIGHT.
+// Only switch to dark if the user explicitly saved "dark" before.
+// We deliberately ignore prefers-color-scheme so the page never starts black.
 function getInitialTheme(): Theme {
   try {
     const saved = localStorage.getItem('theme')
-    if (saved === 'light' || saved === 'dark') return saved
+    if (saved === 'dark') return 'dark'
   } catch {
-    // localStorage unavailable
+    // localStorage unavailable — stay light
   }
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  return 'light'
 }
 
 function NaveIcons() {
   const { t } = useTranslation()
   const [theme, setTheme] = useState<Theme>(getInitialTheme)
 
+  // Apply data-theme to <html> and persist choice whenever it changes
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
     try {
@@ -27,11 +31,20 @@ function NaveIcons() {
     }
   }, [theme])
 
+  // On first mount make absolutely sure data-theme="light" is set,
+  // in case a stale value was left on the element by a previous session.
+  useEffect(() => {
+    const current = document.documentElement.getAttribute('data-theme')
+    if (current !== 'dark') {
+      document.documentElement.setAttribute('data-theme', 'light')
+    }
+  }, [])
+
   function toggle() {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'))
   }
 
-  const isDark   = theme === 'dark'
+  const isDark    = theme === 'dark'
   const ariaLabel = isDark ? t('nav.switchToLight') : t('nav.switchToDark')
 
   return (
