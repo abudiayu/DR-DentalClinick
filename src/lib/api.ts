@@ -71,3 +71,55 @@ export const queueApi = {
       body: { status },
     }),
 };
+
+// ── Patient API (Nurse section) ───────────────────────────────────────────────
+
+export interface NursePatientRow {
+  id: string;
+  card_number: string;
+  full_name: string;
+  age: number;
+  gender: string;
+  phone: string;
+  email: string | null;
+  telegram_id: string | null;
+  address: string | null;
+  emergency_contact: string | null;
+  visit_date: string;
+  card_fee: number;
+  payment_status: "Paid" | "Partial" | "Unpaid";
+  waiting_status: "Waiting" | "In Treatment" | "Completed";
+  registered_at: string;
+  service_type: string;
+}
+
+export type NewPatientPayload = Omit<
+  NursePatientRow,
+  "id" | "card_number" | "registered_at" | "waiting_status"
+>;
+
+export const patientApi = {
+  /** Fetch all patients, optionally filtered by search string */
+  getAll: (search?: string) =>
+    request<NursePatientRow[]>(
+      `/api/patients${search ? `?search=${encodeURIComponent(search)}` : ""}`
+    ),
+
+  /** Register a new patient */
+  register: (payload: NewPatientPayload) =>
+    request<NursePatientRow>("/api/patients", { method: "POST", body: payload }),
+
+  /** Update payment status */
+  updatePayment: (id: string, payment_status: "Paid" | "Partial" | "Unpaid") =>
+    request<NursePatientRow>(`/api/patients/${id}/payment`, {
+      method: "PATCH",
+      body: { payment_status },
+    }),
+
+  /** Update waiting status */
+  updateStatus: (id: string, waiting_status: "Waiting" | "In Treatment" | "Completed") =>
+    request<NursePatientRow>(`/api/patients/${id}/status`, {
+      method: "PATCH",
+      body: { waiting_status },
+    }),
+};

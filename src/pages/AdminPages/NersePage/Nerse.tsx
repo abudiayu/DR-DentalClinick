@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
+import { Loader } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import NurseSidebar from './components/NurseSidebar'
 import NurseTopbar from './components/NurseTopbar'
@@ -10,16 +11,24 @@ import WaitingPatients from './components/WaitingPatients'
 import PatientRecords from './components/PatientRecords'
 import NurseReports from './components/NurseReports'
 import NurseNotifications from './components/NurseNotifications'
-import { patients as storePatients, notifications as storeNotifs } from './store'
+import { useNurseData } from './useNurseData'
 import type { NurseSection } from './types'
 
 export default function Nerse() {
   const { t } = useTranslation()
-  const [active, setActive]           = useState<NurseSection>('dashboard')
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [active, setActive]             = useState<NurseSection>('dashboard')
+  const [sidebarOpen, setSidebarOpen]   = useState(false)
   const [globalSearch, setGlobalSearch] = useState('')
-  const [tick, setTick]               = useState(0)
-  const refresh = useCallback(() => setTick(tk => tk + 1), [])
+  const [navTick, setNavTick]           = useState(0)
+
+  const {
+    patients, notifications,
+    loading, error,
+    addPatient, updatePayment, updateStatus,
+    markAllRead, refresh,
+  } = useNurseData()
+
+  const unread = notifications.filter(n => !n.read).length
 
   const TITLES: Record<NurseSection, string> = {
     dashboard:     t('nurse.dashboard'),
@@ -31,29 +40,52 @@ export default function Nerse() {
     notifications: t('nurse.notifications'),
   }
 
-  const patients      = storePatients
-  const notifications = storeNotifs
-  const unread        = notifications.filter(n => !n.read).length
-
-  function markAllRead() {
-    storeNotifs.forEach(n => { n.read = true })
-    refresh()
-  }
-
   function handleSection(s: NurseSection) {
     setActive(s)
-    refresh()
+    setNavTick(tk => tk + 1)
   }
 
   function renderSection() {
+    // Show a centered spinner while the initial fetch runs
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center py-24 gap-3 text-slate-400">
+          <Loader className="w-5 h-5 animate-spin" />
+          <span className="text-sm">Loading…</span>
+        </div>
+      )
+    }
+
+    if (error) {
+      return (
+        <div className="bg-red-50 border border-red-100 rounded-2xl px-5 py-4 text-red-600 text-sm max-w-lg">
+          {error}
+        </div>
+      )
+    }
+
     switch (active) {
-      case 'dashboard':     return <NurseDashboard patients={patients} />
-      case 'register':      return <RegisterPatient onDone={() => handleSection('waiting')} />
-      case 'payments':      return <CardPayments patients={patients} />
-      case 'waiting':       return <WaitingPatients patients={patients} />
-      case 'records':       return <PatientRecords patients={patients} globalSearch={globalSearch} />
-      case 'reports':       return <NurseReports patients={patients} />
-      case 'notifications': return <NurseNotifications notifications={notifications} onRead={markAllRead} />
+      case 'dashboard':
+        return <NurseDashboard patients={patients} />
+      case 'register':
+        return (
+          <RegisterPatient
+            onDone={(patient) => {
+              if (patient) addPatient(patient)
+              handleSection('waiting')
+            }}
+          />
+        )
+      case 'payments':
+        return <CardPayments patients={patients} onUpdatePayment={updatePayment} />
+      case 'waiting':
+        return <WaitingPatients patients={patients} onUpdateStatus={updateStatus} />
+      case 'records':
+        return <PatientRecords patients={patients} globalSearch={globalSearch} />
+      case 'reports':
+        return <NurseReports patients={patients} />
+      case 'notifications':
+        return <NurseNotifications notifications={notifications} onRead={markAllRead} />
     }
   }
 
@@ -77,7 +109,7 @@ export default function Nerse() {
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
           <AnimatePresence mode="wait">
             <motion.div
-              key={active + tick}
+              key={active + navTick}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}

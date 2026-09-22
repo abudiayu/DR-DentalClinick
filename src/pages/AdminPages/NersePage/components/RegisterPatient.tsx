@@ -3,15 +3,19 @@ import { motion, AnimatePresence } from 'motion/react'
 import { UserPlus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { Gender, PaymentStatus, NursePatient } from '../types'
-import { nextCardNumber, addPatient } from '../store'
+import { rowToPatient } from '../useNurseData'
+import { patientApi, queueApi } from '../../../../lib/api'
 import PatientCardModal from './PatientCardModal'
-import { queueApi } from '../../../../lib/api'
 
-interface Props { onDone: () => void }
+// onDone now passes back the registered patient so Nerse can add it to live state
+interface Props { onDone: (patient?: NursePatient) => void }
 
-const SERVICES = ['Cleaning', 'Whitening', 'Extraction', 'Braces', 'Surgery', 'Consultation', 'X-Ray']
+const SERVICES = [
+  'Cleaning', 'Whitening', 'Extraction', 'Braces',
+  'Surgery', 'Consultation', 'X-Ray', 'Implants',
+  'Root Canal', 'Emergency Care',
+]
 
-/** Rough estimate: 8 minutes per patient ahead in the queue */
 const EST_SECONDS_PER_PATIENT = 8 * 60
 
 export default function RegisterPatient({ onDone }: Props) {
@@ -19,6 +23,7 @@ export default function RegisterPatient({ onDone }: Props) {
   const [registeredPatient, setRegisteredPatient] = useState<NursePatient | null>(null)
   const [loading, setLoading] = useState(false)
   const [apiError, setApiError] = useState('')
+
   const [form, setForm] = useState({
     fullName: '', age: '', gender: 'Male' as Gender,
     phone: '', email: '', telegramId: '',
@@ -35,46 +40,43 @@ export default function RegisterPatient({ onDone }: Props) {
     setLoading(true)
     setApiError('')
 
-    const now = new Date()
-    const patient: NursePatient = {
-      id: Date.now().toString(),
-      cardNumber: nextCardNumber(),
-      fullName: form.fullName,
-      age: Number(form.age),
-      gender: form.gender,
-      phone: form.phone,
-      email: form.email,
-      telegramId: form.telegramId,
-      address: form.address,
-      emergencyContact: form.emergencyContact,
-      visitDate: form.visitDate,
-      cardFee: Number(form.cardFee),
-      paymentStatus: form.paymentStatus,
-      waitingStatus: 'Waiting',
-      registeredAt: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      serviceType: form.serviceType,
-    }
-
-    // Save locally (in-memory store for the nurse dashboard)
-    addPatient(patient)
-
-    // Also add to the live public queue in Supabase.
-    // We fire this as a best-effort — a failure here won't block the registration.
     try {
-      await queueApi.add({
-        patient_name: patient.fullName,
-        treatment: patient.serviceType,
-        // Rough estimate based on how many patients are already waiting.
-        // The backend will assign the real queue_number.
-        est_wait_seconds: EST_SECONDS_PER_PATIENT,
+      // 1. Register in nurse_patients table
+      const row = await patientApi.register({
+        full_name:         form.fullName,
+        age:               Number(form.age),
+        gender:            form.gender,
+        phone:             form.phone,
+        email:             form.email || null,
+        telegram_id:       form.telegramId || null,
+        address:           form.address || null,
+        emergency_contact: form.emergencyContact || null,
+        visit_date:        form.visitDate,
+        card_fee:          Number(form.cardFee),
+        payment_status:    form.paymentStatus,
+        service_type:      form.serviceType,
       })
-    } catch (err) {
-      // Non-blocking: log but don't stop the nurse flow
-      console.warn('[RegisterPatient] queue API error:', err)
-    }
 
-    setLoading(false)
-    setRegisteredPatient(patient)
+      const patient = rowToPatient(row)
+
+      // 2. Also add to the live public queue (best-effort)
+      try {
+        await queueApi.add({
+          patient_name:      patient.fullName,
+          treatment:         patient.serviceType,
+          est_wait_seconds:  EST_SECONDS_PER_PATIENT,
+        })
+      } catch (qErr) {
+        console.warn('[RegisterPatient] queue sync error (non-blocking):', qErr)
+      }
+
+      setRegisteredPatient(patient)
+    } catch (err) {
+      console.error('[RegisterPatient] registration failed:', err)
+      setApiError(err instanceof Error ? err.message : 'Registration failed. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -125,12 +127,12 @@ export default function RegisterPatient({ onDone }: Props) {
                 </select>
               </div>
 
-              <Field label={t('nurse.cardFee')}          value={form.cardFee}          onChange={v => set('cardFee', v)}          type="number" required />
+              <Field label={t('nurse.cardFee')} value={form.cardFee} onChange={v => set('cardFee', v)} type="number" required />
 
               <div>
                 <label className="field-label">{t('nurse.paymentStatus')}</label>
                 <select value={form.paymentStatus} onChange={e => set('paymentStatus', e.target.value as PaymentStatus)} className="field-input">
-                  {(['Paid','Partial','Unpaid'] as PaymentStatus[]).map(s => <option key={s}>{s}</option>)}
+                  {(['Paid', 'Partial', 'Unpaid'] as PaymentStatus[]).map(s => <option key={s}>{s}</option>)}
                 </select>
               </div>
             </div>
@@ -156,7 +158,11 @@ export default function RegisterPatient({ onDone }: Props) {
         {registeredPatient && (
           <PatientCardModal
             patient={registeredPatient}
-            onClose={() => { setRegisteredPatient(null); onDone() }}
+            onClose={() => {
+              const p = registeredPatient
+              setRegisteredPatient(null)
+              onDone(p)
+            }}
           />
         )}
       </AnimatePresence>

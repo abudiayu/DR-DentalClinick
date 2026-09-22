@@ -1,23 +1,29 @@
 import { useState } from 'react'
+import { CheckCircle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { NursePatient, PaymentStatus } from '../types'
-import { updatePaymentStatus } from '../store'
 import WaitingBadge from './WaitingBadge'
-import { CheckCircle } from 'lucide-react'
 
-interface Props { patients: NursePatient[] }
+interface Props {
+  patients: NursePatient[]
+  onUpdatePayment: (id: string, status: PaymentStatus) => Promise<void>
+}
 
-export default function CardPayments({ patients }: Props) {
+export default function CardPayments({ patients, onUpdatePayment }: Props) {
   const { t } = useTranslation()
-  const [list, setList] = useState<NursePatient[]>(patients)
+  const [marking, setMarking] = useState<Set<string>>(new Set())
 
-  function markPaid(id: string) {
-    updatePaymentStatus(id, 'Paid')
-    setList(prev => prev.map(p => p.id === id ? { ...p, paymentStatus: 'Paid' } : p))
+  async function markPaid(id: string) {
+    setMarking(prev => new Set(prev).add(id))
+    try {
+      await onUpdatePayment(id, 'Paid')
+    } finally {
+      setMarking(prev => { const s = new Set(prev); s.delete(id); return s })
+    }
   }
 
-  const totalCollected = list.filter(p => p.paymentStatus === 'Paid').reduce((s, p) => s + p.cardFee, 0)
-  const totalPending   = list.filter(p => p.paymentStatus !== 'Paid').reduce((s, p) => s + p.cardFee, 0)
+  const totalCollected = patients.filter(p => p.paymentStatus === 'Paid').reduce((s, p) => s + p.cardFee, 0)
+  const totalPending   = patients.filter(p => p.paymentStatus !== 'Paid').reduce((s, p) => s + p.cardFee, 0)
 
   const headers = [
     t('nurse.cardNumber'), t('nurse.fullName'), t('nurse.service'),
@@ -29,7 +35,7 @@ export default function CardPayments({ patients }: Props) {
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         <SumCard label={t('nurse.collectedToday')} value={`${totalCollected.toLocaleString()} ${t('common.birr')}`} color="text-emerald-600" bg="bg-emerald-50" />
         <SumCard label={t('nurse.pending')}         value={`${totalPending.toLocaleString()} ${t('common.birr')}`}   color="text-red-500"     bg="bg-red-50"     />
-        <SumCard label={t('nurse.totalPatients')}   value={String(list.length)}                                       color="text-indigo-600"  bg="bg-indigo-50"  />
+        <SumCard label={t('nurse.totalPatients')}   value={String(patients.length)}                                   color="text-indigo-600"  bg="bg-indigo-50"  />
       </div>
 
       <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
@@ -43,20 +49,29 @@ export default function CardPayments({ patients }: Props) {
               </tr>
             </thead>
             <tbody>
-              {list.map(p => (
+              {patients.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="text-center py-12 text-slate-300 text-sm">No payment records yet.</td>
+                </tr>
+              ) : patients.map(p => (
                 <tr key={p.id} className="border-b border-slate-50 hover:bg-slate-50/60 transition-colors">
                   <td className="px-4 py-3 font-mono text-cyan-700 font-semibold">{p.cardNumber}</td>
                   <td className="px-4 py-3 font-medium text-[#0d2044] whitespace-nowrap">{p.fullName}</td>
                   <td className="px-4 py-3 text-slate-500">{p.serviceType}</td>
                   <td className="px-4 py-3 font-mono text-slate-700">{p.cardFee} {t('common.birr')}</td>
-                  <td className="px-4 py-3"><WaitingBadge status={p.paymentStatus as PaymentStatus} /></td>
+                  <td className="px-4 py-3"><WaitingBadge status={p.paymentStatus} /></td>
                   <td className="px-4 py-3">
                     {p.paymentStatus !== 'Paid' ? (
                       <button
                         onClick={() => markPaid(p.id)}
-                        className="flex items-center gap-1 text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-lg hover:bg-emerald-100 transition-colors font-semibold"
+                        disabled={marking.has(p.id)}
+                        className="flex items-center gap-1 text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-lg hover:bg-emerald-100 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        <CheckCircle className="w-3 h-3" /> {t('nurse.markPaid')}
+                        {marking.has(p.id)
+                          ? <span className="w-3 h-3 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
+                          : <CheckCircle className="w-3 h-3" />
+                        }
+                        {t('nurse.markPaid')}
                       </button>
                     ) : (
                       <span className="text-slate-300 text-[11px]">—</span>
