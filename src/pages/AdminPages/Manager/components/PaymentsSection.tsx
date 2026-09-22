@@ -1,19 +1,20 @@
 import { useTranslation } from 'react-i18next'
-import { mockPayments } from '../mockData'
 import StatusBadge from './StatusBadge'
-import type { PaymentStatus } from '../types'
+import type { Payment, PaymentStatus } from '../types'
 
-export default function PaymentsSection() {
+interface Props { payments: Payment[] }
+
+export default function PaymentsSection({ payments }: Props) {
   const { t } = useTranslation()
-  const totalIncome  = mockPayments.reduce((s, p) => s + p.paidAmount, 0)
-  const totalPending = mockPayments.reduce((s, p) => s + p.remaining, 0)
+  const totalCollected = payments.reduce((s, p) => s + p.paidAmount,  0)
+  const totalPending   = payments.reduce((s, p) => s + p.remaining,   0)
 
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <SummaryCard label={t('manager.totalCollected')} value={totalIncome}         color="text-emerald-600" />
-        <SummaryCard label={t('manager.pendingBalance')} value={totalPending}        color="text-red-500"     />
-        <SummaryCard label={t('manager.totalRecords')}   value={mockPayments.length} color="text-indigo-600"  isCount />
+        <SummaryCard label={t('manager.totalCollected')} value={totalCollected}    color="text-emerald-600" />
+        <SummaryCard label={t('manager.pendingBalance')} value={totalPending}      color="text-red-500"     />
+        <SummaryCard label={t('manager.totalRecords')}   value={payments.length}   color="text-indigo-600"  isCount />
       </div>
 
       <div className="bg-white rounded-xl border border-slate-100 overflow-hidden">
@@ -21,17 +22,16 @@ export default function PaymentsSection() {
           <table className="w-full text-xs">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50">
-                {[
-                  t('manager.patient'), t('manager.service'),
-                  t('manager.totalFee'), t('manager.paid'),
-                  t('manager.remaining'), t('manager.status'),
-                ].map(h => (
+                {[t('manager.patient'), t('manager.service'), t('manager.totalFee'),
+                  t('manager.paid'), t('manager.remaining'), t('manager.status')].map(h => (
                   <th key={h} className="text-start px-4 py-3 text-slate-500 font-semibold uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {mockPayments.map(p => (
+              {payments.length === 0 ? (
+                <tr><td colSpan={6} className="text-center py-12 text-slate-400">No payment records yet.</td></tr>
+              ) : payments.map(p => (
                 <tr key={p.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
                   <td className="px-4 py-3 font-medium text-slate-800 whitespace-nowrap">{p.patientName}</td>
                   <td className="px-4 py-3 text-slate-500">{p.service}</td>

@@ -3,7 +3,6 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import { dailyIncomeData, monthlyProfitData, serviceRevenueData } from '../mockData'
 
 function ChartCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -14,12 +13,16 @@ function ChartCard({ title, children }: { title: string; children: React.ReactNo
   )
 }
 
-export function DailyIncomeChart() {
+type DailyRow    = { day: string; earnings: number; card: number; treatment: number }
+type MonthlyRow  = { month: string; income: number; expenses: number; profit: number }
+type PieRow      = { name: string; value: number; color: string }
+
+export function DailyIncomeChart({ data }: { data: DailyRow[] }) {
   const { t } = useTranslation()
   return (
     <ChartCard title={t('manager.dailyIncome')}>
       <ResponsiveContainer width="100%" height={220}>
-        <AreaChart data={dailyIncomeData}>
+        <AreaChart data={data}>
           <defs>
             <linearGradient id="gEarnings" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%"  stopColor="#6366f1" stopOpacity={0.2} />
@@ -27,8 +30,8 @@ export function DailyIncomeChart() {
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-          <XAxis dataKey="day"      tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-          <YAxis                    tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+          <XAxis dataKey="day"  tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+          <YAxis                tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
           <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e2e8f0' }} />
           <Legend wrapperStyle={{ fontSize: 11 }} />
           <Area type="monotone" dataKey="earnings"  stroke="#6366f1" fill="url(#gEarnings)" strokeWidth={2}   name="Total"     />
@@ -40,19 +43,19 @@ export function DailyIncomeChart() {
   )
 }
 
-export function MonthlyProfitChart() {
+export function MonthlyProfitChart({ data }: { data: MonthlyRow[] }) {
   const { t } = useTranslation()
   return (
     <ChartCard title={t('manager.monthlyProfitChart')}>
       <ResponsiveContainer width="100%" height={220}>
-        <BarChart data={monthlyProfitData} barGap={4}>
+        <BarChart data={data} barGap={4}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
           <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
           <YAxis                 tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
           <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e2e8f0' }} />
           <Legend wrapperStyle={{ fontSize: 11 }} />
-          <Bar dataKey="income"   fill="#6366f1" radius={[4,4,0,0]} name={t('manager.income')}   />
-          <Bar dataKey="expenses" fill="#e2e8f0" radius={[4,4,0,0]} name={t('manager.expenses')} />
+          <Bar dataKey="income"   fill="#6366f1" radius={[4,4,0,0]} name={t('manager.income')}    />
+          <Bar dataKey="expenses" fill="#e2e8f0" radius={[4,4,0,0]} name={t('manager.expenses')}  />
           <Bar dataKey="profit"   fill="#10b981" radius={[4,4,0,0]} name={t('manager.netProfit')} />
         </BarChart>
       </ResponsiveContainer>
@@ -60,22 +63,14 @@ export function MonthlyProfitChart() {
   )
 }
 
-export function ServiceRevenuePie() {
+export function ServiceRevenuePie({ data }: { data: PieRow[] }) {
   const { t } = useTranslation()
   return (
     <ChartCard title={t('manager.serviceRevenue')}>
       <ResponsiveContainer width="100%" height={220}>
         <PieChart>
-          <Pie
-            data={serviceRevenueData}
-            cx="50%" cy="50%"
-            innerRadius={55} outerRadius={85}
-            paddingAngle={3}
-            dataKey="value"
-          >
-            {serviceRevenueData.map((entry, i) => (
-              <Cell key={i} fill={entry.color} />
-            ))}
+          <Pie data={data} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="value">
+            {data.map((entry, i) => <Cell key={i} fill={entry.color} />)}
           </Pie>
           <Tooltip
             contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e2e8f0' }}

@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { motion } from 'motion/react'
 import { useNavigate } from 'react-router-dom'
-import { User, Phone, Mail, Calendar, MessageSquare, Stethoscope, ArrowUpRight } from 'lucide-react'
+import { User, Phone, Mail, Calendar, MessageSquare, Stethoscope, ArrowUpRight, Loader } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { bookingApi } from '../../lib/api'
 import './Booking.css'
 
 export default function Booking() {
@@ -10,10 +12,39 @@ export default function Booking() {
 
   const services: string[] = t('booking.services', { returnObjects: true }) as string[]
 
-  function handleSubmit(e: React.FormEvent) {
+  const [loading,   setLoading]   = useState(false)
+  const [apiError,  setApiError]  = useState('')
+  const [form, setForm] = useState({
+    fullName: '', phone: '', email: '',
+    service: '', date: '', message: '',
+  })
+
+  function setField(k: string, v: string) {
+    setForm(f => ({ ...f, [k]: v }))
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    alert(t('booking.successAlert'))
-    navigate('/queue')
+    setApiError('')
+    setLoading(true)
+
+    try {
+      await bookingApi.submit({
+        full_name:      form.fullName,
+        phone:          form.phone,
+        email:          form.email || undefined,
+        service_type:   form.service,
+        preferred_date: form.date,
+        message:        form.message || undefined,
+      })
+      // Success → go to queue page so patient can see their position
+      navigate('/queue', { state: { booked: true } })
+    } catch (err) {
+      console.error('[Booking] submit failed:', err)
+      setApiError(err instanceof Error ? err.message : t('auth.serverUnreachable'))
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -47,6 +78,13 @@ export default function Booking() {
             </p>
           </div>
 
+          {/* Error banner */}
+          {apiError && (
+            <div className="mb-6 rounded-2xl bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-600">
+              {apiError}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
 
             {/* Full Name */}
@@ -57,8 +95,9 @@ export default function Booking() {
               <div className="booking-field-wrapper flex items-center gap-3 bg-[#f8f8f8] border border-black/5 rounded-2xl px-4 py-3.5 transition-all duration-200">
                 <User className="booking-field-icon w-4 h-4 text-[#5E6470] shrink-0" />
                 <input
-                  type="text"
-                  required
+                  type="text" required
+                  value={form.fullName}
+                  onChange={e => setField('fullName', e.target.value)}
                   placeholder={t('booking.fullNamePlaceholder')}
                   aria-label={t('booking.fullName')}
                   className="bg-transparent w-full text-[#202B4D] text-sm font-normal outline-none placeholder:text-[#5E6470]/50"
@@ -75,8 +114,9 @@ export default function Booking() {
                 <div className="booking-field-wrapper flex items-center gap-3 bg-[#f8f8f8] border border-black/5 rounded-2xl px-4 py-3.5 transition-all duration-200">
                   <Phone className="booking-field-icon w-4 h-4 text-[#5E6470] shrink-0" />
                   <input
-                    type="tel"
-                    required
+                    type="tel" required
+                    value={form.phone}
+                    onChange={e => setField('phone', e.target.value)}
                     placeholder={t('booking.phonePlaceholder')}
                     aria-label={t('booking.phone')}
                     className="bg-transparent w-full text-[#202B4D] text-sm font-normal outline-none placeholder:text-[#5E6470]/50"
@@ -91,6 +131,8 @@ export default function Booking() {
                   <Mail className="booking-field-icon w-4 h-4 text-[#5E6470] shrink-0" />
                   <input
                     type="email"
+                    value={form.email}
+                    onChange={e => setField('email', e.target.value)}
                     placeholder={t('booking.emailPlaceholder')}
                     aria-label={t('booking.email')}
                     className="bg-transparent w-full text-[#202B4D] text-sm font-normal outline-none placeholder:text-[#5E6470]/50"
@@ -108,9 +150,10 @@ export default function Booking() {
                 <Stethoscope className="booking-field-icon w-4 h-4 text-[#5E6470] shrink-0" />
                 <select
                   required
+                  value={form.service}
+                  onChange={e => setField('service', e.target.value)}
                   aria-label={t('booking.service')}
                   className="bg-transparent w-full text-[#202B4D] text-sm font-normal outline-none cursor-pointer"
-                  defaultValue=""
                 >
                   <option value="" disabled>{t('booking.selectService')}</option>
                   {services.map(s => (
@@ -128,8 +171,10 @@ export default function Booking() {
               <div className="booking-field-wrapper flex items-center gap-3 bg-[#f8f8f8] border border-black/5 rounded-2xl px-4 py-3.5 transition-all duration-200">
                 <Calendar className="booking-field-icon w-4 h-4 text-[#5E6470] shrink-0" />
                 <input
-                  type="date"
-                  required
+                  type="date" required
+                  value={form.date}
+                  onChange={e => setField('date', e.target.value)}
+                  min={new Date().toISOString().slice(0, 10)}
                   aria-label={t('booking.preferredDate')}
                   className="bg-transparent w-full text-[#202B4D] text-sm font-normal outline-none cursor-pointer"
                 />
@@ -145,6 +190,8 @@ export default function Booking() {
                 <MessageSquare className="booking-field-icon w-4 h-4 text-[#5E6470] shrink-0 mt-0.5" />
                 <textarea
                   rows={3}
+                  value={form.message}
+                  onChange={e => setField('message', e.target.value)}
                   placeholder={t('booking.messagePlaceholder')}
                   aria-label={t('booking.message')}
                   className="bg-transparent w-full text-[#202B4D] text-sm font-normal outline-none resize-none placeholder:text-[#5E6470]/50"
@@ -155,10 +202,12 @@ export default function Booking() {
             {/* Submit */}
             <motion.button
               type="submit"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="booking-submit-btn mt-2 w-full bg-[#202B4D] text-white text-sm font-normal py-4 rounded-2xl hover:bg-[#2d3d6b] transition-colors cursor-pointer"
+              whileHover={{ scale: loading ? 1 : 1.02 }}
+              whileTap={{ scale: loading ? 1 : 0.98 }}
+              disabled={loading}
+              className="booking-submit-btn mt-2 w-full bg-[#202B4D] text-white text-sm font-normal py-4 rounded-2xl hover:bg-[#2d3d6b] transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
+              {loading && <Loader className="w-4 h-4 animate-spin" />}
               {t('booking.confirm')}
             </motion.button>
           </form>

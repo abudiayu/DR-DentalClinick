@@ -1,29 +1,24 @@
 import { useState } from 'react'
-import { Search, Eye, Pencil, Printer, Trash2, Plus } from 'lucide-react'
+import { Search, Eye, Printer, Trash2, Plus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { Patient, PaymentStatus } from '../types'
-import { mockPatients } from '../mockData'
 import StatusBadge from './StatusBadge'
 
-export default function PatientsSection() {
+interface Props { patients: Patient[] }
+
+export default function PatientsSection({ patients }: Props) {
   const { t } = useTranslation()
-  const [patients, setPatients] = useState<Patient[]>(mockPatients)
   const [search, setSearch] = useState('')
-  const [page, setPage] = useState(1)
+  const [page,   setPage]   = useState(1)
   const PER_PAGE = 5
 
   const filtered = patients.filter(p =>
     p.fullName.toLowerCase().includes(search.toLowerCase()) ||
-    p.cardNumber.toLowerCase().includes(search.toLowerCase())
+    p.cardNumber.toLowerCase().includes(search.toLowerCase()) ||
+    p.phone.includes(search)
   )
   const totalPages = Math.ceil(filtered.length / PER_PAGE)
-  const paged = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE)
-
-  function deletePatient(id: string) {
-    if (confirm(t('manager.deleteConfirm'))) {
-      setPatients(prev => prev.filter(p => p.id !== id))
-    }
-  }
+  const paged      = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE)
 
   const headers = [
     t('manager.cardNo'), t('manager.name'), t('manager.phone'),
@@ -62,9 +57,7 @@ export default function PatientsSection() {
             <tbody>
               {paged.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-12 text-slate-400">
-                    {t('manager.noPatients')}
-                  </td>
+                  <td colSpan={8} className="text-center py-12 text-slate-400">{t('manager.noPatients')}</td>
                 </tr>
               ) : paged.map(p => (
                 <tr key={p.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
@@ -78,9 +71,8 @@ export default function PatientsSection() {
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1.5">
                       <ActionBtn icon={<Eye     className="w-3.5 h-3.5" />} color="text-indigo-500" />
-                      <ActionBtn icon={<Pencil  className="w-3.5 h-3.5" />} color="text-amber-500" />
-                      <ActionBtn icon={<Printer className="w-3.5 h-3.5" />} color="text-slate-400" />
-                      <ActionBtn icon={<Trash2  className="w-3.5 h-3.5" />} color="text-red-400" onClick={() => deletePatient(p.id)} />
+                      <ActionBtn icon={<Printer className="w-3.5 h-3.5" />} color="text-slate-400"  onClick={() => window.print()} />
+                      <ActionBtn icon={<Trash2  className="w-3.5 h-3.5" />} color="text-red-400"    />
                     </div>
                   </td>
                 </tr>
@@ -96,13 +88,8 @@ export default function PatientsSection() {
             </span>
             <div className="flex gap-1">
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(n => (
-                <button
-                  key={n}
-                  onClick={() => setPage(n)}
-                  className={`w-7 h-7 rounded text-xs font-medium transition-colors ${
-                    n === page ? 'bg-[#0F172A] text-white' : 'text-slate-500 hover:bg-slate-100'
-                  }`}
-                >
+                <button key={n} onClick={() => setPage(n)}
+                  className={`w-7 h-7 rounded text-xs font-medium transition-colors ${n === page ? 'bg-[#0F172A] text-white' : 'text-slate-500 hover:bg-slate-100'}`}>
                   {n}
                 </button>
               ))}

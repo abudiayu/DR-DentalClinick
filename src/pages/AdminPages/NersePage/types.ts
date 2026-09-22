@@ -1,6 +1,6 @@
 export type Gender = 'Male' | 'Female' | 'Other'
 export type PaymentStatus = 'Paid' | 'Partial' | 'Unpaid'
-export type WaitingStatus = 'Waiting' | 'In Treatment' | 'Completed'
+export type WaitingStatus = 'Pending' | 'Waiting' | 'In Treatment' | 'Completed'
 export type NurseSection =
   | 'dashboard'
   | 'register'

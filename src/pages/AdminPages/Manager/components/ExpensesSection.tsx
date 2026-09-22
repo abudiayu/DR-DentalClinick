@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { Expense, ExpenseCategory } from '../types'
-import { mockExpenses } from '../mockData'
 
 const CATEGORIES: ExpenseCategory[] = ['Electricity', 'Water', 'Equipment', 'Employee Salary', 'Medicine']
 
@@ -14,27 +13,39 @@ const catColors: Record<ExpenseCategory, string> = {
   Medicine:          'bg-emerald-50 text-emerald-700',
 }
 
-export default function ExpensesSection() {
+interface Props {
+  expenses:    Expense[]
+  totalIncome: number
+  onAdd:       (e: Omit<Expense, 'id'>) => Promise<void>
+  onDelete:    (id: string) => Promise<void>
+}
+
+export default function ExpensesSection({ expenses, totalIncome, onAdd, onDelete }: Props) {
   const { t } = useTranslation()
-  const [expenses, setExpenses] = useState<Expense[]>(mockExpenses)
   const [showForm, setShowForm] = useState(false)
-  const [form, setForm] = useState({ title: '', amount: '', category: CATEGORIES[0] as ExpenseCategory, date: '' })
+  const [saving,   setSaving]   = useState(false)
+  const [form, setForm] = useState({
+    title: '', amount: '', category: CATEGORIES[0] as ExpenseCategory, date: '',
+  })
 
   const totalExpenses = expenses.reduce((s, e) => s + e.amount, 0)
-  const totalIncome   = 98000
   const netProfit     = totalIncome - totalExpenses
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setExpenses(prev => [...prev, {
-      id: Date.now().toString(),
-      title: form.title,
-      amount: Number(form.amount),
-      category: form.category,
-      date: form.date,
-    }])
-    setForm({ title: '', amount: '', category: CATEGORIES[0], date: '' })
-    setShowForm(false)
+    setSaving(true)
+    try {
+      await onAdd({
+        title:    form.title,
+        amount:   Number(form.amount),
+        category: form.category,
+        date:     form.date,
+      })
+      setForm({ title: '', amount: '', category: CATEGORIES[0], date: '' })
+      setShowForm(false)
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -58,10 +69,8 @@ export default function ExpensesSection() {
       </div>
 
       <div className="flex justify-end">
-        <button
-          onClick={() => setShowForm(v => !v)}
-          className="flex items-center gap-1.5 bg-[#0F172A] text-white text-xs px-3 py-2 rounded-lg hover:bg-slate-700 transition-colors"
-        >
+        <button onClick={() => setShowForm(v => !v)}
+          className="flex items-center gap-1.5 bg-[#0F172A] text-white text-xs px-3 py-2 rounded-lg hover:bg-slate-700 transition-colors">
           <Plus className="w-3.5 h-3.5" /> {t('manager.addExpense')}
         </button>
       </div>
@@ -94,8 +103,15 @@ export default function ExpensesSection() {
             </div>
           </div>
           <div className="flex gap-2 pt-1">
-            <button type="submit" className="bg-[#0F172A] text-white text-xs px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors">{t('common.save')}</button>
-            <button type="button" onClick={() => setShowForm(false)} className="text-xs px-4 py-2 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors">{t('common.cancel')}</button>
+            <button type="submit" disabled={saving}
+              className="bg-[#0F172A] text-white text-xs px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors disabled:opacity-60 flex items-center gap-1.5">
+              {saving && <span className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" />}
+              {t('common.save')}
+            </button>
+            <button type="button" onClick={() => setShowForm(false)}
+              className="text-xs px-4 py-2 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors">
+              {t('common.cancel')}
+            </button>
           </div>
         </form>
       )}
@@ -110,12 +126,14 @@ export default function ExpensesSection() {
             </tr>
           </thead>
           <tbody>
-            {expenses.map(e => (
+            {expenses.length === 0 ? (
+              <tr><td colSpan={4} className="text-center py-12 text-slate-400">No expenses recorded yet.</td></tr>
+            ) : expenses.map(e => (
               <tr key={e.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
                 <td className="px-4 py-3 font-medium text-slate-800">{e.title}</td>
                 <td className="px-4 py-3 text-red-500 font-mono">{e.amount.toLocaleString()} {t('common.birr')}</td>
                 <td className="px-4 py-3">
-                  <span className={`px-2 py-0.5 rounded-full text-[11px] font-medium ${catColors[e.category]}`}>
+                  <span className={`px-2 py-0.5 rounded-full text-[11px] font-medium ${catColors[e.category] ?? 'bg-slate-50 text-slate-600'}`}>
                     {e.category}
                   </span>
                 </td>

@@ -59,12 +59,16 @@ export default function RegisterPatient({ onDone }: Props) {
 
       const patient = rowToPatient(row)
 
-      // 2. Also add to the live public queue (best-effort)
+      // 2. Add to the live public queue.
+      // The backend assigns the real queue_number based on today's count.
+      // est_wait_seconds = (position - 1) × 8 min, so position 1 waits 0 seconds.
+      // We pass 0 here and let the backend compute it from the count.
       try {
         await queueApi.add({
-          patient_name:      patient.fullName,
-          treatment:         patient.serviceType,
-          est_wait_seconds:  EST_SECONDS_PER_PATIENT,
+          patient_name: patient.fullName,
+          treatment:    patient.serviceType,
+          // est_wait_seconds is computed server-side from the queue position
+          est_wait_seconds: 0,
         })
       } catch (qErr) {
         console.warn('[RegisterPatient] queue sync error (non-blocking):', qErr)

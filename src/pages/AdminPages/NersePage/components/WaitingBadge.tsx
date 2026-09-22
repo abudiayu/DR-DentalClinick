@@ -3,6 +3,7 @@ import type { WaitingStatus, PaymentStatus } from '../types'
 type AnyStatus = WaitingStatus | PaymentStatus
 
 const cfg: Record<AnyStatus, { bg: string; text: string; dot: string }> = {
+  Pending:       { bg: 'bg-orange-50',  text: 'text-orange-600',  dot: 'bg-orange-400'  },
   Waiting:       { bg: 'bg-amber-50',   text: 'text-amber-700',   dot: 'bg-amber-400'   },
   'In Treatment':{ bg: 'bg-blue-50',    text: 'text-blue-700',    dot: 'bg-blue-500'    },
   Completed:     { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500' },

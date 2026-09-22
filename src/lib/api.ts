@@ -105,7 +105,7 @@ export const patientApi = {
       `/api/patients${search ? `?search=${encodeURIComponent(search)}` : ""}`
     ),
 
-  /** Register a new patient */
+  /** Register a new patient (nurse panel — requires JWT) */
   register: (payload: NewPatientPayload) =>
     request<NursePatientRow>("/api/patients", { method: "POST", body: payload }),
 
@@ -116,10 +116,68 @@ export const patientApi = {
       body: { payment_status },
     }),
 
-  /** Update waiting status */
-  updateStatus: (id: string, waiting_status: "Waiting" | "In Treatment" | "Completed") =>
+  /** Update waiting status — Pending→Waiting also auto-adds to queue */
+  updateStatus: (id: string, waiting_status: "Pending" | "Waiting" | "In Treatment" | "Completed") =>
     request<NursePatientRow>(`/api/patients/${id}/status`, {
       method: "PATCH",
       body: { waiting_status },
     }),
+};
+
+// ── Public Booking API (no JWT) ───────────────────────────────────────────────
+
+export interface BookingPayload {
+  full_name: string;
+  phone: string;
+  email?: string;
+  service_type: string;
+  preferred_date: string;
+  message?: string;
+}
+
+export const bookingApi = {
+  /** Submit appointment booking form — public, no auth required */
+  submit: (payload: BookingPayload) =>
+    request<{ message: string; booking: { id: string; card_number: string } }>(
+      "/api/bookings",
+      { method: "POST", body: payload }
+    ),
+};
+
+// ── Manager: Expenses API ─────────────────────────────────────────────────────
+
+export interface ExpenseRow {
+  id: string;
+  title: string;
+  amount: number;
+  category: string;
+  date: string;
+}
+
+export const expenseApi = {
+  getAll: () => request<ExpenseRow[]>("/api/expenses"),
+  add: (payload: Omit<ExpenseRow, "id">) =>
+    request<ExpenseRow>("/api/expenses", { method: "POST", body: payload }),
+  remove: (id: string) =>
+    request<{ message: string }>(`/api/expenses/${id}`, { method: "DELETE" }),
+};
+
+// ── Manager: Services API ─────────────────────────────────────────────────────
+
+export interface ServiceRow {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+  active: boolean;
+}
+
+export const serviceApi = {
+  getAll: () => request<ServiceRow[]>("/api/services"),
+  add: (payload: Omit<ServiceRow, "id">) =>
+    request<ServiceRow>("/api/services", { method: "POST", body: payload }),
+  update: (id: string, payload: Partial<Omit<ServiceRow, "id">>) =>
+    request<ServiceRow>(`/api/services/${id}`, { method: "PATCH", body: payload }),
+  remove: (id: string) =>
+    request<{ message: string }>(`/api/services/${id}`, { method: "DELETE" }),
 };

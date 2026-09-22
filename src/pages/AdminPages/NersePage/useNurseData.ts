@@ -51,14 +51,40 @@ export function useNurseData(): NurseDataState {
   const [error,         setError]         = useState<string | null>(null);
   const [tick,          setTick]          = useState(0);
 
-  // Keep a ref so callbacks always see the latest patients without stale closures
-  const patientsRef = useRef<NursePatient[]>([]);
-  patientsRef.current = patients;
+  // Keep refs so callbacks always see latest data without stale closures
+  const patientsRef     = useRef<NursePatient[]>([]);
+  const prevPendingIds  = useRef<Set<string>>(new Set());
+  patientsRef.current   = patients;
 
-  const fetchAll = useCallback(async () => {
+  const fetchAll = useCallback(async (isPolling = false) => {
     try {
-      const rows = await patientApi.getAll();
+      const rows   = await patientApi.getAll();
       const mapped = rows.map(rowToPatient);
+
+      // Detect brand-new pending bookings (only on background polls, not initial load)
+      if (isPolling) {
+        const newPending = mapped.filter(
+          p => p.waitingStatus === 'Pending' && !prevPendingIds.current.has(p.id)
+        );
+        if (newPending.length > 0) {
+          setNotifications(prev => [
+            ...newPending.map(p => ({
+              id:      `booking-${p.id}`,
+              message: `New booking from ${p.fullName} — ${p.serviceType} on ${p.visitDate}`,
+              time:    new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+              read:    false,
+              type:    "patient" as const,
+            })),
+            ...prev,
+          ]);
+        }
+      }
+
+      // Update the set of known pending IDs
+      prevPendingIds.current = new Set(
+        mapped.filter(p => p.waitingStatus === 'Pending').map(p => p.id)
+      );
+
       setPatients(mapped);
       setError(null);
     } catch (err) {
@@ -69,9 +95,11 @@ export function useNurseData(): NurseDataState {
     }
   }, []);
 
-  // Initial fetch
+  // Initial fetch + poll every 10 seconds to catch new bookings
   useEffect(() => {
-    fetchAll();
+    fetchAll(false);
+    const poll = setInterval(() => fetchAll(true), 10_000);
+    return () => clearInterval(poll);
   }, [fetchAll, tick]);
 
   // ── addPatient ──────────────────────────────────────────────────────────────
