@@ -181,3 +181,29 @@ export const serviceApi = {
   remove: (id: string) =>
     request<{ message: string }>(`/api/services/${id}`, { method: "DELETE" }),
 };
+
+// ── Staff API (Manager only) ──────────────────────────────────────────────────
+
+export interface StaffUser {
+  id:         string;
+  name:       string;
+  email:      string;
+  role:       "manager" | "nurse" | "card";
+  created_at: string;
+}
+
+export const staffApi = {
+  /** Get all staff users — manager only */
+  getAll: () => request<StaffUser[]>("/api/staff"),
+
+  /** Delete a staff user */
+  remove: (id: string) =>
+    request<{ message: string }>(`/api/staff/${id}`, { method: "DELETE" }),
+
+  /** Reset a staff user's password */
+  resetPassword: (id: string, new_password: string) =>
+    request<{ message: string; user: StaffUser }>(`/api/staff/${id}/password`, {
+      method: "PATCH",
+      body: { new_password },
+    }),
+};
