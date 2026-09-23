@@ -120,24 +120,34 @@ export default function ExpensesSection({ expenses, totalIncome, onAdd, onDelete
         <table className="w-full text-xs">
           <thead>
             <tr className="border-b border-slate-100 bg-slate-50">
-              {[t('manager.title'), t('manager.amount'), t('manager.category'), t('manager.date')].map(h => (
-                <th key={h} className="text-start px-4 py-3 text-slate-500 font-semibold uppercase tracking-wider">{h}</th>
+              {[t('manager.title'), t('manager.amount'), t('manager.category'), t('manager.date'), ''].map((h, i) => (
+                <th key={i} className="text-start px-4 py-3 text-slate-500 font-semibold uppercase tracking-wider">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {expenses.length === 0 ? (
-              <tr><td colSpan={4} className="text-center py-12 text-slate-400">No expenses recorded yet.</td></tr>
+              <tr><td colSpan={5} className="text-center py-12 text-slate-400">No expenses recorded yet.</td></tr>
             ) : expenses.map(e => (
               <tr key={e.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
                 <td className="px-4 py-3 font-medium text-slate-800">{e.title}</td>
                 <td className="px-4 py-3 text-red-500 font-mono">{e.amount.toLocaleString()} {t('common.birr')}</td>
                 <td className="px-4 py-3">
-                  <span className={`px-2 py-0.5 rounded-full text-[11px] font-medium ${catColors[e.category] ?? 'bg-slate-50 text-slate-600'}`}>
+                  <span className={`px-2 py-0.5 rounded-full text-[11px] font-medium ${catColors[e.category as ExpenseCategory] ?? 'bg-slate-50 text-slate-600'}`}>
                     {e.category}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-slate-500">{e.date}</td>
+                <td className="px-4 py-3">
+                  <button
+                    onClick={() => onDelete(e.id)}
+                    className="p-1.5 rounded-md hover:bg-red-50 text-red-400 transition-colors"
+                    title="Delete expense"
+                    aria-label="Delete expense"
+                  >
+                    ✕
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>

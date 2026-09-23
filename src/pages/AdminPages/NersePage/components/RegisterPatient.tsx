@@ -65,10 +65,9 @@ export default function RegisterPatient({ onDone }: Props) {
       // We pass 0 here and let the backend compute it from the count.
       try {
         await queueApi.add({
-          patient_name: patient.fullName,
-          treatment:    patient.serviceType,
-          // est_wait_seconds is computed server-side from the queue position
-          est_wait_seconds: 0,
+          patient_name:     patient.fullName,
+          treatment:        patient.serviceType,
+          est_wait_seconds: EST_SECONDS_PER_PATIENT,
         })
       } catch (qErr) {
         console.warn('[RegisterPatient] queue sync error (non-blocking):', qErr)

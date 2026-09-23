@@ -15,7 +15,7 @@ export default function SettingsSection() {
   // ── Clinic settings (local state — no backend for this yet) ──────────────
   const [clinicName, setClinicName] = useState('Dr. Muhammed Zain Dental Clinic')
   const [password,   setPassword]   = useState('')
-  const [confirm,    setConfirm]    = useState('')
+  const [confirmPw,  setConfirmPw]  = useState('')
   const [saved,      setSaved]      = useState(false)
 
   function handleSave(e: React.FormEvent) {
@@ -47,7 +47,7 @@ export default function SettingsSection() {
   }, [])
 
   async function deleteUser(user: StaffUser) {
-    if (!confirm(`Delete ${user.name} (${user.email})?`)) return
+    if (!window.confirm(`Delete ${user.name} (${user.email})?`)) return
     setDeleting(prev => new Set(prev).add(user.id))
     try {
       await staffApi.remove(user.id)
@@ -97,7 +97,7 @@ export default function SettingsSection() {
 
         <div>
           <label className="block text-[10px] uppercase tracking-widest text-slate-500 mb-1">{t('manager.confirmPassword')}</label>
-          <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)}
+          <input type="password" value={confirmPw} onChange={e => setConfirmPw(e.target.value)}
             placeholder={t('manager.confirmPasswordPlaceholder')} aria-label={t('manager.confirmPassword')}
             className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-slate-400 transition-colors" />
         </div>

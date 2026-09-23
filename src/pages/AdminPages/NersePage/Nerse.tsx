@@ -43,6 +43,7 @@ export default function Nerse() {
   function handleSection(s: NurseSection) {
     setActive(s)
     setNavTick(tk => tk + 1)
+    refresh()
   }
 
   function renderSection() {

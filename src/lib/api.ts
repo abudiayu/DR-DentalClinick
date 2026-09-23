@@ -88,7 +88,7 @@ export interface NursePatientRow {
   visit_date: string;
   card_fee: number;
   payment_status: "Paid" | "Partial" | "Unpaid";
-  waiting_status: "Waiting" | "In Treatment" | "Completed";
+  waiting_status: "Pending" | "Waiting" | "In Treatment" | "Completed";
   registered_at: string;
   service_type: string;
 }
