@@ -1,9 +1,6 @@
 // src/lib/api.ts
 // Centralised fetch wrapper.  All components import from here so the base URL
 // is configured in exactly one place via VITE_API_URL.
-// Auth token comes from the live Supabase session (not localStorage "token").
-
-import { supabase } from './supabase'
 
 const BASE = (import.meta.env.VITE_API_URL as string | undefined) || "http://localhost:5000";
 
@@ -12,9 +9,7 @@ type RequestOptions = Omit<RequestInit, "body"> & { body?: unknown };
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { body, headers, ...rest } = options;
 
-  // Use the Supabase session JWT — auto-refreshed, no manual management needed.
-  const { data } = await supabase.auth.getSession()
-  const token = data.session?.access_token ?? null
+  const token = localStorage.getItem("token");
 
   const res = await fetch(`${BASE}${path}`, {
     ...rest,

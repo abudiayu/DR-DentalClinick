@@ -1,41 +1,36 @@
-// src/pages/AdminPages/Auth/Auth.tsx
-// Login & register — uses Supabase Auth directly (no Express round-trip).
-// UI, role picker, and i18n are unchanged.
-
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { Eye, EyeOff, Loader, GitBranch, Globe } from 'lucide-react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import CornerDot from '../../../components/CornerDot'
-import { loginStaff, ROLE_ROUTES, type Role } from '../../../lib/auth'
 
-// ─── Preload the three destination pages while the user types ─────────────────
-// React.lazy chunks are fetched but not rendered — they'll be ready the moment
-// the user is authenticated, making the redirect feel instant.
-const preloadManager = () => import('../Manager/Manager')
-const preloadNerse   = () => import('../NersePage/Nerse')
-const preloadCard    = () => import('../Card/Card')
+type Position = 'manager' | 'nurse' | 'card'
 
-const ROLE_PRELOADERS: Record<Role, () => Promise<unknown>> = {
-  manager: preloadManager,
-  nurse:   preloadNerse,
-  card:    preloadCard,
+type AuthUser = {
+  id: string
+  name: string
+  email: string
+  role: Position
 }
 
-// ─── Registration still goes through the backend ─────────────────────────────
-// The backend creates both a Supabase Auth user AND a staff_users row,
-// and embeds the role in user_metadata — so login never needs a second query.
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
-export default function Auth() {
-  const navigate  = useNavigate()
-  const location  = useLocation()
-  const { t }     = useTranslation()
+const POSITION_ROUTES: Record<Position, string> = {
+  manager: '/manager',
+  nurse:   '/Nerse',
+  card:    '/card',
+}
 
+export default function Auth() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { t } = useTranslation()
+
+  // If ProtectedRoute sent the user here, go back to the page they wanted
   const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname
 
-  const POSITIONS: { value: Role; label: string }[] = [
+  const POSITIONS: { value: Position; label: string }[] = [
     { value: 'manager', label: t('auth.manager')   },
     { value: 'nurse',   label: t('auth.nurse')     },
     { value: 'card',    label: t('auth.cardStaff') },
@@ -44,25 +39,13 @@ export default function Auth() {
   const [isRegister, setIsRegister]     = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading]           = useState(false)
-  const [position, setPosition]         = useState<Role>('manager')
+  const [position, setPosition]         = useState<Position>('manager')
   const [error, setError]               = useState('')
   const [notice, setNotice]             = useState('')
   const [form, setForm] = useState({ name: '', email: '', password: '', inviteCode: '' })
 
-  // Preload the selected role's page while the user fills the form
-  useEffect(() => {
-    ROLE_PRELOADERS[position]()
-  }, [position])
-
-  // Also kick off a preload the moment ANY key is pressed (email/password field)
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
-    // Preload all three pages on first keystroke — cheap, pays off on redirect
-    if (!isRegister) {
-      preloadManager()
-      preloadNerse()
-      preloadCard()
-    }
   }
 
   function toggleMode() {
@@ -71,71 +54,58 @@ export default function Auth() {
     setNotice('')
   }
 
-  // ── Login — direct Supabase Auth call, no backend involved ──────────────────
-  async function handleLogin() {
-    console.time('[auth] handleLogin → navigate')
-    try {
-      const user = await loginStaff(form.email, form.password, position)
-      // Navigate to wherever they were headed, or their role's default page
-      navigate(from || ROLE_ROUTES[user.role], { replace: true })
-      console.timeEnd('[auth] handleLogin → navigate')
-    } catch (err: unknown) {
-      console.timeEnd('[auth] handleLogin → navigate')
-      const message = err instanceof Error ? err.message : String(err)
-      setError(
-        message ||
-        t('auth.somethingWrong', { defaultValue: 'Something went wrong. Please try again.' })
-      )
-    }
-  }
-
-  // ── Register — goes through the Express backend ───────────────────────────
-  // The backend: validates invite code, creates a Supabase Auth user (with
-  // role in user_metadata), inserts into staff_users, returns success.
-  async function handleRegister() {
-    if (form.password.length < 8) {
-      setError(t('auth.passwordTooShort', { defaultValue: 'Password must be at least 8 characters.' }))
-      return
-    }
-
-    const res = await fetch(`${API_URL}/api/auth/register`, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name:       form.name,
-        email:      form.email,
-        password:   form.password,
-        role:       position,
-        inviteCode: form.inviteCode,
-      }),
-    })
-    const data = await res.json().catch(() => ({}))
-
-    if (!res.ok) {
-      setError(
-        (data as { message?: string }).message ||
-        t('auth.somethingWrong', { defaultValue: 'Something went wrong. Please try again.' })
-      )
-      return
-    }
-
-    setIsRegister(false)
-    setForm(prev => ({ ...prev, password: '', inviteCode: '' }))
-    setNotice(t('auth.accountCreated', { defaultValue: 'Account created. You can log in now.' }))
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
     setNotice('')
-    setLoading(true)
 
+    if (isRegister && form.password.length < 8) {
+      setError(t('auth.passwordTooShort', { defaultValue: 'Password must be at least 8 characters.' }))
+      return
+    }
+
+    setLoading(true)
     try {
-      if (isRegister) {
-        await handleRegister()
-      } else {
-        await handleLogin()
+      const endpoint = isRegister ? 'register' : 'login'
+      const payload = isRegister
+        ? {
+            name: form.name,
+            email: form.email,
+            password: form.password,
+            role: position,
+            inviteCode: form.inviteCode,
+          }
+        : { email: form.email, password: form.password, role: position }
+
+      const res = await fetch(`${API_URL}/api/auth/${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      const data = await res.json().catch(() => ({}))
+
+      if (!res.ok) {
+        setError(
+          data.message ||
+            t('auth.somethingWrong', { defaultValue: 'Something went wrong. Please try again.' })
+        )
+        return
       }
+
+      if (isRegister) {
+        setIsRegister(false)
+        setForm(prev => ({ ...prev, password: '', inviteCode: '' }))
+        setNotice(
+          t('auth.accountCreated', { defaultValue: 'Account created. You can log in now.' })
+        )
+        return
+      }
+
+      // Login OK: keep the token + user (ProtectedRoute reads these)
+      const user = data.user as AuthUser
+      localStorage.setItem('token', data.token)
+      localStorage.setItem('user', JSON.stringify(user))
+      navigate(from || POSITION_ROUTES[user.role] || '/', { replace: true })
     } catch {
       setError(
         t('auth.serverUnreachable', {
@@ -147,7 +117,6 @@ export default function Auth() {
     }
   }
 
-  // ── UI (unchanged from original) ──────────────────────────────────────────
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center relative overflow-hidden">
       <div className="grid-overlay" />
@@ -190,7 +159,7 @@ export default function Auth() {
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {/* Messages */}
+          {/* Success / error messages */}
           {notice && (
             <div
               role="status"
@@ -208,7 +177,6 @@ export default function Auth() {
             </div>
           )}
 
-          {/* Name — register only */}
           <AnimatePresence>
             {isRegister && (
               <motion.div
@@ -284,7 +252,7 @@ export default function Auth() {
             </div>
           </div>
 
-          {/* Invite code — register only */}
+          {/* Staff invite code — register only */}
           <AnimatePresence>
             {isRegister && (
               <motion.div
@@ -313,7 +281,7 @@ export default function Auth() {
             )}
           </AnimatePresence>
 
-          {/* Position selector */}
+          {/* Position selector — login and register */}
           <div>
             <label className="block text-[10px] uppercase tracking-widest text-[#64748B] mb-1.5">
               {t('auth.position')}
@@ -358,7 +326,7 @@ export default function Auth() {
           <div className="flex-1 h-px bg-[#E2E8F0]" />
         </div>
 
-        {/* Social buttons */}
+        {/* Social */}
         <div className="flex gap-3">
           {[
             { icon: <GitBranch className="w-4 h-4" />, label: t('auth.github') },
@@ -377,7 +345,7 @@ export default function Auth() {
           ))}
         </div>
 
-        {/* Toggle register / login */}
+        {/* Toggle */}
         <p className="text-center text-xs text-[#94A3B8] mt-6 uppercase tracking-widest">
           {isRegister ? t('auth.alreadyHaveAccess') : t('auth.noAccount')}{' '}
           <button
