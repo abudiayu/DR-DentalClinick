@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import './i18n'
 import './index.css'
 import App from './App.tsx'
+import AppErrorBoundary from './components/AppErrorBoundary'
 
 // Safety net: if localStorage has no explicit theme saved, force light.
 // This clears any stale "dark" value left from OS preference detection.
@@ -17,7 +18,9 @@ try {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <AppErrorBoundary>
+        <App />
+      </AppErrorBoundary>
     </BrowserRouter>
   </StrictMode>,
 )

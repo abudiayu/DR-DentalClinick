@@ -1,5 +1,4 @@
-import { Routes, Route, useLocation } from 'react-router-dom'
-import Navbar from './components/Navbar'
+import { Routes, Route } from 'react-router-dom'
 import Hero from './components/Hero'
 import HomeContent from './components/sections/HomeContent'
 import Booking from './pages/Booking/Booking'
@@ -9,7 +8,20 @@ import Card from './pages/AdminPages/Card/Card'
 import Nerse from './pages/AdminPages/NersePage/Nerse'
 import Auth from './pages/AdminPages/Auth/Auth'
 import { Error } from './Error/Error'
-import ProtectedRoute from './routes/ProtectedRoute';
+import ProtectedRoute from './routes/ProtectedRoute'
+import PublicLayout from './layouts/PublicLayout'
+
+// Footer pages
+import DentalSurgery   from './components/FootersListPage/DentalSurgery'
+import BracesAligner   from './components/FootersListPage/BracesAligner'
+import SmileDesign     from './components/FootersListPage/SmileDesign'
+import RootCanal       from './components/FootersListPage/RootCanal'
+import AboutUs         from './components/FootersListPage/AboutUs'
+import OurDoctors      from './components/FootersListPage/OurDoctors'
+import PatientStories  from './components/FootersListPage/PatientStories'
+import Technology      from './components/FootersListPage/Technology'
+import Careers         from './components/FootersListPage/Careers'
+import TeethWhitening  from './components/FootersListPage/TeethWhitening'
 
 function Home() {
   return (
@@ -20,35 +32,39 @@ function Home() {
   )
 }
 
-const HIDE_NAV = ['/auth', '/manager', '/card', '/nerse']
-
 export default function App() {
-  const { pathname } = useLocation()
-  const showNav = !HIDE_NAV.includes(pathname.toLowerCase())
-
   return (
-    <>
-  {showNav && <Navbar />}
-      <Routes>
+    <Routes>
+      {/* ── Public pages — Navbar always shown ── */}
+      <Route element={<PublicLayout />}>
+        <Route index element={<Home />} />
+        <Route path="booking"        element={<Booking />} />
+        <Route path="queue"          element={<Queue />} />
+        <Route path="dental-surgery"  element={<DentalSurgery />} />
+        <Route path="braces-aligners" element={<BracesAligner />} />
+        <Route path="smile-design"    element={<SmileDesign />} />
+        <Route path="root-canal"      element={<RootCanal />} />
+        <Route path="about-us"        element={<AboutUs />} />
+        <Route path="our-doctors"     element={<OurDoctors />} />
+        <Route path="patient-stories" element={<PatientStories />} />
+        <Route path="technology"      element={<Technology />} />
+        <Route path="careers"         element={<Careers />} />
+        <Route path="teeth-whitening" element={<TeethWhitening />} />
+      </Route>
 
-        <Route path="/" element={<Home />} />
-        <Route path="/booking" element={<Booking />} />
-        <Route path="/queue" element={<Queue />} />
-        <Route path="/auth" element={<Auth />} />
+      {/* ── Auth — no navbar ── */}
+      <Route path="/auth" element={<Auth />} />
 
+      {/* ── Admin — protected, no public navbar ── */}
+      <Route element={<ProtectedRoute allowedRoles={['manager']} />}>
+        <Route path="/manager" element={<Manager />} />
+      </Route>
+      <Route element={<ProtectedRoute allowedRoles={['nurse', 'manager']} />}>
+        <Route path="/Nerse" element={<Nerse />} />
+        <Route path="/card"  element={<Card />} />
+      </Route>
 
-        <Route element={<ProtectedRoute allowedRoles={["manager"]} />}>
-          <Route path="/manager" element={<Manager />} />
-        </Route>
-
-        {/* Nurse (and manager) */}
-        <Route element={<ProtectedRoute allowedRoles={["nurse", "manager"]} />}>
-          <Route path="/Nerse" element={<Nerse />} />
-          <Route path="/card" element={<Card />} />
-        </Route>
-
-        <Route path="*" element={<Error />} />
-          </Routes>
-        </>
+      <Route path="*" element={<Error />} />
+    </Routes>
   )
 }
