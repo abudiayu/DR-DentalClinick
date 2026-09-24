@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { motion } from 'motion/react'
+import { motion, type Variants } from 'motion/react'
 import {
   Briefcase, ArrowRight, ChevronRight,
   CheckCircle2, Users, Heart, Zap,
@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 import Footer from '../sections/Footer'
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 32 },
   visible: (i: number) => ({
     opacity: 1, y: 0,
