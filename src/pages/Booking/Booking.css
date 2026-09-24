@@ -1,0 +1,115 @@
+.booking_back {
+  background-color: rgb(219, 234, 248);
+  font-weight: bold;
+  position: fixed;
+  color: rgb(84, 82, 82);
+  padding: 5px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  margin-left: -70px;
+}
+.booking_back:hover {
+  background-color: rgb(188, 218, 247);
+}
+@media (max-width: 768px) {
+  .booking_back {
+    display: none;
+  }
+}
+
+/* ================================================================
+   DARK MODE — Booking form
+   Activated when <html data-theme="dark"> is set.
+   Light mode is completely untouched.
+   ================================================================ */
+
+/* Page background */
+[data-theme="dark"] .booking-page {
+  background-color: #0d1117 !important;
+}
+
+/* Outer card */
+[data-theme="dark"] .booking-card {
+  background-color: #161b22 !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+  box-shadow: 0 10px 48px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Clinic name label */
+[data-theme="dark"] .booking-clinic-label {
+  color: #8b949e !important;
+}
+
+/* Title */
+[data-theme="dark"] .booking-title {
+  color: #e6edf3 !important;
+}
+
+/* Subtitle */
+[data-theme="dark"] .booking-subtitle {
+  color: #8b949e !important;
+}
+
+/* Field labels */
+[data-theme="dark"] .booking-field-label {
+  color: #8b949e !important;
+}
+
+/* Input / select / textarea wrappers */
+[data-theme="dark"] .booking-field-wrapper {
+  background-color: #1c2128 !important;
+  border-color: #30363d !important;
+}
+
+/* Focus ring on wrapper */
+[data-theme="dark"] .booking-field-wrapper:focus-within {
+  border-color: #388bfd !important;
+  box-shadow: 0 0 0 3px rgba(56, 139, 253, 0.15) !important;
+}
+
+/* Icons inside wrappers */
+[data-theme="dark"] .booking-field-icon {
+  color: #656d76 !important;
+}
+
+/* Text inputs */
+[data-theme="dark"] .booking-field-wrapper input,
+[data-theme="dark"] .booking-field-wrapper select,
+[data-theme="dark"] .booking-field-wrapper textarea {
+  color: #e6edf3 !important;
+  background-color: transparent !important;
+  color-scheme: dark;
+}
+
+/* Placeholder text */
+[data-theme="dark"] .booking-field-wrapper input::placeholder,
+[data-theme="dark"] .booking-field-wrapper textarea::placeholder {
+  color: #484f58 !important;
+}
+
+/* Select option text (rendered by OS, limited styling) */
+[data-theme="dark"] .booking-field-wrapper select option {
+  background-color: #1c2128;
+  color: #e6edf3;
+}
+
+/* Submit button */
+[data-theme="dark"] .booking-submit-btn {
+  background-color: #388bfd !important;
+  color: #ffffff !important;
+}
+[data-theme="dark"] .booking-submit-btn:hover {
+  background-color: #58a6ff !important;
+}
+
+/* Back button */
+[data-theme="dark"] .booking_back {
+  background-color: #21262d;
+  color: #8b949e;
+  border: 1px solid #30363d;
+}
+[data-theme="dark"] .booking_back:hover {
+  background-color: #2d333b;
+  color: #e6edf3;
+}

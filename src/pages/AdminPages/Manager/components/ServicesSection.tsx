@@ -1,0 +1,133 @@
+import { useState } from 'react'
+import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import type { Service } from '../types'
+
+interface Props {
+  services:  Service[]
+  onAdd:     (s: Omit<Service, 'id'>) => Promise<void>
+  onUpdate:  (id: string, patch: Partial<Omit<Service, 'id'>>) => Promise<void>
+  onDelete:  (id: string) => Promise<void>
+}
+
+export default function ServicesSection({ services, onAdd, onUpdate, onDelete }: Props) {
+  const { t } = useTranslation()
+  const [showForm, setShowForm] = useState(false)
+  const [form,     setForm]     = useState({ name: '', price: '', description: '' })
+  const [editId,   setEditId]   = useState<string | null>(null)
+  const [saving,   setSaving]   = useState(false)
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setSaving(true)
+    try {
+      if (editId) {
+        await onUpdate(editId, { name: form.name, price: Number(form.price), description: form.description })
+        setEditId(null)
+      } else {
+        await onAdd({ name: form.name, price: Number(form.price), description: form.description, active: true })
+      }
+      setForm({ name: '', price: '', description: '' })
+      setShowForm(false)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  function startEdit(s: Service) {
+    setForm({ name: s.name, price: String(s.price), description: s.description })
+    setEditId(s.id)
+    setShowForm(true)
+  }
+
+  async function deleteService(id: string) {
+    if (confirm(t('manager.deleteServiceConfirm'))) await onDelete(id)
+  }
+
+  async function toggleActive(s: Service) {
+    await onUpdate(s.id, { active: !s.active })
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-end">
+        <button
+          onClick={() => { setShowForm(v => !v); setEditId(null); setForm({ name: '', price: '', description: '' }) }}
+          className="flex items-center gap-1.5 bg-[#0F172A] text-white text-xs px-3 py-2 rounded-lg hover:bg-slate-700 transition-colors"
+        >
+          <Plus className="w-3.5 h-3.5" /> {t('manager.addService')}
+        </button>
+      </div>
+
+      {showForm && (
+        <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+          <h3 className="text-xs font-semibold text-slate-600 uppercase tracking-widest">
+            {editId ? t('manager.editService') : t('manager.newService')}
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Field label={t('manager.serviceName')} value={form.name}  onChange={v => setForm(f => ({ ...f, name: v }))}  required />
+            <Field label={t('manager.priceBirr')}   value={form.price} onChange={v => setForm(f => ({ ...f, price: v }))} type="number" required />
+          </div>
+          <Field label={t('manager.description')} value={form.description} onChange={v => setForm(f => ({ ...f, description: v }))} />
+          <div className="flex gap-2 pt-1">
+            <button type="submit" disabled={saving}
+              className="bg-[#0F172A] text-white text-xs px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors disabled:opacity-60 flex items-center gap-1.5">
+              {saving && <span className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" />}
+              {editId ? t('manager.update') : t('manager.saveService')}
+            </button>
+            <button type="button" onClick={() => setShowForm(false)}
+              className="text-xs px-4 py-2 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors">
+              {t('common.cancel')}
+            </button>
+          </div>
+        </form>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {services.length === 0 && (
+          <p className="text-sm text-slate-400 col-span-3 text-center py-8">No services yet. Add one above.</p>
+        )}
+        {services.map(s => (
+          <div key={s.id} className={`bg-white rounded-xl border p-4 transition-all ${s.active ? 'border-slate-100' : 'border-slate-100 opacity-60'}`}>
+            <div className="flex items-start justify-between mb-2">
+              <div>
+                <p className="text-sm font-semibold text-slate-800">{s.name}</p>
+                <p className="text-xs text-slate-400 mt-0.5">{s.description}</p>
+              </div>
+              <span className="text-indigo-600 font-bold text-sm whitespace-nowrap ms-2">
+                {s.price.toLocaleString()} {t('common.birr')}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-slate-50">
+              <button onClick={() => startEdit(s)} className="p-1.5 rounded-md hover:bg-slate-100 text-amber-500 transition-colors">
+                <Pencil className="w-3.5 h-3.5" />
+              </button>
+              <button onClick={() => deleteService(s.id)} className="p-1.5 rounded-md hover:bg-slate-100 text-red-400 transition-colors">
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+              <button onClick={() => toggleActive(s)}
+                className={`ms-auto p-1.5 rounded-md transition-colors ${s.active ? 'text-emerald-500 hover:bg-emerald-50' : 'text-slate-400 hover:bg-slate-100'}`}>
+                {s.active ? <ToggleRight className="w-4 h-4" /> : <ToggleLeft className="w-4 h-4" />}
+              </button>
+              <span className={`text-[10px] uppercase tracking-widest ${s.active ? 'text-emerald-500' : 'text-slate-400'}`}>
+                {s.active ? t('manager.active') : t('manager.inactive')}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function Field({ label, value, onChange, type = 'text', required }: {
+  label: string; value: string; onChange: (v: string) => void; type?: string; required?: boolean
+}) {
+  return (
+    <div>
+      <label className="block text-[10px] uppercase tracking-widest text-slate-500 mb-1">{label}</label>
+      <input type={type} value={value} onChange={e => onChange(e.target.value)} required={required}
+        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-800 outline-none focus:border-slate-400 transition-colors" />
+    </div>
+  )
+}

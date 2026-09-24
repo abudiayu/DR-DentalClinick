@@ -1,0 +1,319 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Helvetica Regular";
+  src: url("https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.eot");
+  src: url("https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.eot?#iefix")format("embedded-opentype"),
+  url("https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.woff2")format("woff2"),
+  url("https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.woff")format("woff"),
+  url("https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.ttf")format("truetype"),
+  url("https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.svg#Helvetica Regular")format("svg");
+}
+
+@theme {
+  --font-helvetica: "Helvetica Regular", ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  font-family: var(--font-helvetica);
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  background-color: #f0f0f0;
+}
+
+/* Nurse / shared form field utilities */
+.field-label {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+.field-input {
+  width: 100%;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.field-input:focus {
+  border-color: #22d3ee;
+}
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, #E2E8F0 1px, transparent 1px),
+    linear-gradient(to bottom, #E2E8F0 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.frame-line {
+  position: fixed;
+  background-color: #E2E8F0;
+  pointer-events: none;
+  z-index: 10;
+}
+.frame-line-top    { top: 12px;    left: 12px; right: 12px;  height: 1px; }
+.frame-line-bottom { bottom: 12px; left: 12px; right: 12px;  height: 1px; }
+.frame-line-left   { left: 12px;   top: 12px;  bottom: 12px; width: 1px;  }
+.frame-line-right  { right: 12px;  top: 12px;  bottom: 12px; width: 1px;  }
+
+/* =========================================================
+   RTL + language-specific fonts
+   ========================================================= */
+
+/* Amharic */
+html[lang="am"] {
+  font-family: 'Noto Sans Ethiopic', var(--font-helvetica), sans-serif;
+}
+
+/* Arabic — RTL */
+html[lang="ar"] {
+  font-family: 'Cairo', var(--font-helvetica), sans-serif;
+  direction: rtl;
+}
+
+/* RTL layout fixes */
+[dir="rtl"] .lang__menu {
+  transform-origin: top left;
+}
+
+/* Flip chevron/arrow icons in RTL */
+[dir="rtl"] .lucide-arrow-up-right,
+[dir="rtl"] .lucide-chevron-right,
+[dir="rtl"] .lucide-arrow-right,
+[dir="rtl"] .lucide-arrow-left {
+  transform: scaleX(-1);
+}
+
+/* Navbar center menu RTL spacing */
+[dir="rtl"] nav ul {
+  direction: rtl;
+}
+
+/* Logical-property helpers already used via ms-/me-/ps-/pe-/start-/end-
+   Tailwind v4 supports these natively so no extra overrides needed. */
+
+/* Prevent horizontal scroll bleed in RTL */
+[dir="rtl"] body {
+  overflow-x: hidden;
+}
+
+/* =========================================================
+   Dark-mode CSS variables + overrides
+   Activated by: document.documentElement.setAttribute("data-theme","dark")
+   Light mode is unchanged — all existing colors are preserved.
+   ========================================================= */
+
+:root {
+  /* --- light (default, matches existing design) --- */
+  --bg-page:          #f0f0f0;
+  --bg-surface:       #ffffff;
+  --bg-surface-soft:  #f8fafc;
+  --bg-field:         #f1f5f9;
+  --text-primary:     #0f172a;
+  --text-secondary:   #5e6470;
+  --text-muted:       #94a3b8;
+  --border-base:      #e2e8f0;
+  --border-soft:      rgba(0, 0, 0, 0.05);
+  --shadow-card:      0 10px 40px rgba(0, 0, 0, 0.03);
+  --nav-brand:        #202b4d;
+}
+
+[data-theme="dark"] {
+  --bg-page:          #0d1117;
+  --bg-surface:       #161b22;
+  --bg-surface-soft:  #21262d;
+  --bg-field:         #1c2128;
+  --text-primary:     #e6edf3;
+  --text-secondary:   #8b949e;
+  --text-muted:       #656d76;
+  --border-base:      #30363d;
+  --border-soft:      rgba(255, 255, 255, 0.06);
+  --shadow-card:      0 10px 40px rgba(0, 0, 0, 0.40);
+  --nav-brand:        #58a6ff;
+}
+
+/* ---- Page background ---- */
+[data-theme="dark"] body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+}
+
+/* ---- White cards / surfaces ---- */
+[data-theme="dark"] .bg-white,
+[data-theme="dark"] [class*="bg-white"] {
+  background-color: var(--bg-surface) !important;
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .bg-\[\#f0f0f0\],
+[data-theme="dark"] .bg-\[\#F8FAFC\],
+[data-theme="dark"] .bg-\[\#f8fafc\] {
+  background-color: var(--bg-page) !important;
+}
+
+/* ---- Slate utility overrides (Tailwind) ---- */
+[data-theme="dark"] .bg-slate-50   { background-color: var(--bg-surface-soft) !important; }
+[data-theme="dark"] .bg-slate-100  { background-color: #1c2128 !important; }
+[data-theme="dark"] .border-slate-100,
+[data-theme="dark"] .border-slate-200 { border-color: var(--border-base) !important; }
+
+/* ---- Text colours ---- */
+[data-theme="dark"] .text-slate-800,
+[data-theme="dark"] .text-slate-900,
+[data-theme="dark"] .text-\[\#0F172A\],
+[data-theme="dark"] .text-\[\#202B4D\] {
+  color: var(--text-primary) !important;
+}
+[data-theme="dark"] .text-slate-500,
+[data-theme="dark"] .text-slate-600,
+[data-theme="dark"] .text-\[\#5E6470\] {
+  color: var(--text-secondary) !important;
+}
+[data-theme="dark"] .text-slate-400,
+[data-theme="dark"] .text-\[\#94A3B8\] {
+  color: var(--text-muted) !important;
+}
+
+/* ---- Borders ---- */
+[data-theme="dark"] .border-black\/5 {
+  border-color: var(--border-soft) !important;
+}
+
+/* ---- Hero section (keeps background image; only overlay adjusts) ---- */
+[data-theme="dark"] #home {
+  background-color: #050a10;
+}
+
+/* ---- Inputs & fields ---- */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea,
+[data-theme="dark"] .field-input {
+  background-color: var(--bg-field) !important;
+  border-color:     var(--border-base) !important;
+  color:            var(--text-primary) !important;
+}
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* ---- Navbar glass pill (LanguageDropdown already uses CSS vars from languageDropdown.css) ---- */
+[data-theme="dark"] nav {
+  --tw-bg-opacity: 1;
+}
+
+/* ---- Admin sidebars (already dark, leave untouched) ---- */
+
+/* ---- Frame lines ---- */
+[data-theme="dark"] .frame-line {
+  background-color: #30363d;
+}
+
+/* ---- Grid overlay ---- */
+[data-theme="dark"] .grid-overlay {
+  background-image:
+    linear-gradient(to right, #21262d 1px, transparent 1px),
+    linear-gradient(to bottom, #21262d 1px, transparent 1px);
+}
+
+/* ---- Stats row dividers ---- */
+[data-theme="dark"] .border-black\/5 {
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ---- Footer border ---- */
+[data-theme="dark"] .border-t.border-black\/5 {
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ---- Shadow cards ---- */
+[data-theme="dark"] .shadow-\[0_10px_40px_rgba\(0\,0\,0\,0\.03\)\] {
+  box-shadow: var(--shadow-card) !important;
+}
+
+/* ---- Booking / Queue page background ---- */
+[data-theme="dark"] .min-h-screen.bg-\[\#f0f0f0\] {
+  background-color: var(--bg-page) !important;
+}
+
+/* ---- Auth card ---- */
+[data-theme="dark"] .bg-\[\#F8FAFC\].flex.items-center {
+  background-color: var(--bg-page) !important;
+}
+
+/* ---- Bottom-right corner cutout fill ---- */
+[data-theme="dark"] .bg-\[\#f0f0f0\].rounded-tl-\[1\.5rem\],
+[data-theme="dark"] .bg-\[\#f0f0f0\].rounded-tl-\[2rem\],
+[data-theme="dark"] .bg-\[\#f0f0f0\].rounded-tl-\[3\.5rem\] {
+  background-color: var(--bg-page) !important;
+}
+[data-theme="dark"] svg path[fill="#f0f0f0"] {
+  fill: var(--bg-page);
+}
+
+/* ================================================================
+   DARK MODE — Hero bottom cards (text color only)
+   BottomLeftCard  : "Join Staff" button label + icon
+   BottomRightCorner: "Patient Queue" label + "See" link
+   Background/layout is unchanged — only dark navy text is lightened.
+   ================================================================ */
+
+/* BottomLeftCard — "Join Staff" button: bg-white is already overridden to
+   a dark surface by the rule above, so the dark navy text must go light. */
+[data-theme="dark"] .hero-join-btn {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+}
+[data-theme="dark"] .hero-join-btn:hover {
+  background-color: rgba(255, 255, 255, 0.18) !important;
+}
+[data-theme="dark"] .hero-join-btn-icon {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+}
+[data-theme="dark"] .hero-join-btn-icon .lucide {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .hero-join-btn-label {
+  color: #e6edf3 !important;
+}
+
+/* BottomRightCorner — circle icon button */
+[data-theme="dark"] .hero-queue-icon-btn {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+[data-theme="dark"] .hero-queue-icon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.14) !important;
+}
+[data-theme="dark"] .hero-queue-icon-btn .lucide {
+  color: #e6edf3 !important;
+}
+
+/* BottomRightCorner — "Patient Queue" primary text */
+[data-theme="dark"] .hero-queue-title {
+  color: #e6edf3 !important;
+}
+[data-theme="dark"] .group:hover .hero-queue-title {
+  color: #adbac7 !important;
+}
+
+/* BottomRightCorner — "See ›" secondary text + chevron */
+[data-theme="dark"] .hero-queue-sub {
+  color: #8b949e !important;
+}
+[data-theme="dark"] .group:hover .hero-queue-sub {
+  color: #adbac7 !important;
+}
