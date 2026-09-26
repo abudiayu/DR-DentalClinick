@@ -85,6 +85,11 @@
     "privacyPolicy": "Imaammata Dhuunfaa",
     "termsOfService": "Hayyama Tajaajilaa"
   },
+  "loading": {
+    "welcome": "Baga Kilinika Ilkaanii Dr. Muhammed Zain Dhuftan",
+    "message": "Fe'amaa jira, maaloo eegaa…",
+    "slow": "Ammallee fe'amaa jira, walqunnamtii kee mirkaneessi…"
+  },
   "booking": {
     "clinicName": "Kilinika Ilkaanii Dr. Muhammed Zain",
     "title": "Beellama Buuqi",

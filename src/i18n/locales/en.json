@@ -519,6 +519,11 @@
     "faq4Q": "Can I whiten if I have crowns or veneers?",
     "faq4A": "Whitening works on natural enamel only. We will advise if restorations need to be updated to match."
   },
+  "loading": {
+    "welcome": "Welcome to Dr. Muhammed Zain Dental Clinic",
+    "message": "Loading, please wait…",
+    "slow": "Still loading, please check your connection…"
+  },
   "booking": {
     "clinicName": "Dr. Muhammed Zain Dental Clinic",
     "title": "Book an Appointment",
