@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   Phone, Mail, MapPin,
-  ArrowUpRight, Heart,
+  ArrowUpRight,
 } from 'lucide-react'
 
 const treatmentLinks = [
@@ -171,7 +171,6 @@ export default function Footer() {
         <div className="mt-12 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <span className="text-slate-500 text-[12px] flex items-center gap-1.5">
             {t('footer.copyright')}
-            <Heart className="w-3 h-3 text-rose-400 inline fill-rose-400" />
           </span>
           <span className="text-slate-500 text-[12px]">
             {t('footer.privacyPolicy')} · {t('footer.termsOfService')}
